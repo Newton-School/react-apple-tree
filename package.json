@@ -1,6 +1,6 @@
 {
   "name": "@newtonschool/react-apple-tree",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "React Apple Tree is an updated version of the popular library react-sortable-tree.",
   "keywords": [
     "React Apple Tree",
@@ -17,6 +17,7 @@
   "bugs": {
     "url": "https://github.com/Newton-School/react-apple-tree/issues"
   },
+  "type": "module",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
