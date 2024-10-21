@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/Newton-School/react-apple-tree/issues"
   },
-  "source": "src/index.tsx",
+  "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
