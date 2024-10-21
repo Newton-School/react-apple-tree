@@ -1,6 +1,6 @@
 {
   "name": "@newtonschool/react-apple-tree",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React Apple Tree is an updated version of the popular library react-sortable-tree.",
   "keywords": [
     "React Apple Tree",
@@ -22,9 +22,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist && rm -rf .parcel-cache",
-    "copy_files": "cp -r src/public dist/",
-    "build": "npm run clean && npm run extract-typings && parcel build && npm run copy_files",
-    "watch": "nodemon --exec \"tsc && npm run copy_files\" --watch src --ext ts,tsx,css",
+    "build": "npm run clean && npm run extract-typings && parcel build",
+    "watch": "nodemon --exec \"tsc\" --watch src --ext ts,tsx,css",
     "extract-typings": "tsc --project tsconfig.types.json",
     "test": "jest",
     "test:watch": "jest --watch"
