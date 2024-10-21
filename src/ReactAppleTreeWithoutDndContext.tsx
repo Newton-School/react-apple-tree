@@ -1,5 +1,4 @@
 import React from "react";
-import "./public/library.css";
 
 import { ReactAppleTreeProps } from "./types";
 

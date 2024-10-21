@@ -23,7 +23,7 @@
   "scripts": {
     "clean": "rm -rf dist && rm -rf .parcel-cache",
     "copy_files": "cp -r src/public dist/",
-    "build": "npm run clean && npm run extract-typings && parcel build",
+    "build": "npm run clean && npm run extract-typings && parcel build && npm run copy_files",
     "watch": "nodemon --exec \"tsc && npm run copy_files\" --watch src --ext ts,tsx,css",
     "extract-typings": "tsc --project tsconfig.types.json",
     "test": "jest",
