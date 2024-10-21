@@ -1,4 +1,6 @@
-.react-apple-tree {
+import styled from "styled-components";
+
+export const StyledReactAppleTree = styled.div`
   --ns-rat-node-hover-color: #dde4f6;
   --ns-rat-can-drop-color: #a0bbff;
   --ns-rat-cannot-drop-color: #f09393;
@@ -9,4 +11,4 @@
 
   width: 100%;
   height: 100%;
-}
+`;

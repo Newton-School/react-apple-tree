@@ -1,14 +1,4 @@
 /**
- * Concatenates the provided class names into a single string.
- *
- * @param classes - An array of class names to be concatenated.
- * @returns A string containing all the non-empty class names separated by a space.
- */
-export function classnames(...classes: Array<string | undefined>): string {
-  return classes.filter((el) => el).join(" ");
-}
-
-/**
  * Generates a unique ID.
  *
  * @param length - The length of the generated ID. Default is 16.

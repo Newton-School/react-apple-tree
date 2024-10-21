@@ -7,9 +7,8 @@ import { PropDataContextProvider } from "./contexts/PropDataContext";
 import { DNDContextProvider } from "./contexts/DNDContext";
 
 import TreeList from "./components/TreeList";
-import { classnames } from "./utils/common";
 import { SearchContextProvider } from "./contexts/SearchContext";
-import { DEFAULT_CLASSNAME } from "./constants";
+import { StyledReactAppleTree } from "./ReactAppleTree.styles";
 
 export default function ReactAppleTreeWithoutDndContext<T>(
   props: React.PropsWithChildren<ReactAppleTreeProps<T>>
@@ -19,9 +18,9 @@ export default function ReactAppleTreeWithoutDndContext<T>(
       <TreeDataContextProvider>
         <SearchContextProvider>
           <DNDContextProvider>
-            <div className={classnames(DEFAULT_CLASSNAME, props.className)}>
+            <StyledReactAppleTree className={props.className}>
               <TreeList {...props} />
-            </div>
+            </StyledReactAppleTree>
           </DNDContextProvider>
         </SearchContextProvider>
       </TreeDataContextProvider>
