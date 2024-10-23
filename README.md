@@ -7,9 +7,9 @@ React Apple Tree is an updated version of the popular library `react-sortable-tr
 To install React Apple Tree, you can use npm or yarn:
 
 ```bash
-npm install react-apple-tree
+npm i @newtonschool/react-apple-tree
 # or
-yarn add react-apple-tree
+yarn add @newtonschool/react-apple-tree
 ```
 
 ## Local Testing
