@@ -31,7 +31,8 @@
     "watch": "nodemon --exec \"tsc\" --watch src --ext ts,tsx,css",
     "extract-typings": "tsc --project tsconfig.types.json",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
