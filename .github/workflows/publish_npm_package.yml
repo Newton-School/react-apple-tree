@@ -1,0 +1,26 @@
+# This workflow will publish a new version to npm registry when a release is created
+
+name: Publish NPM Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Package
+        run: npm run build
+      - name: Publish to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NEW_RELEASE_NPM_TOKEN }}
+        run: npm publish --access public
