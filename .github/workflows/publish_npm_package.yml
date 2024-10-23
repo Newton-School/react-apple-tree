@@ -20,7 +20,6 @@ jobs:
         run: npm ci
       - name: Build Package
         run: npm run build
-      - name: Publish to NPM
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NEW_RELEASE_NPM_TOKEN }}
-        run: npm publish --provenance --access public
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.PUBLISH_NEW_RELEASE_NPM_TOKEN }}
