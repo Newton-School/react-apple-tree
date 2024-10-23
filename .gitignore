@@ -1,4 +1,10 @@
+# Build
 dist
 build
-node_modules
 .parcel-cache
+
+# Dev
+node_modules
+
+# Test
+coverage
