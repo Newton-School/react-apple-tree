@@ -26,9 +26,8 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf dist && rm -rf .parcel-cache",
-    "build": "npm run clean && npm run extract-typings && parcel build",
-    "watch": "nodemon --exec \"tsc\" --watch src --ext ts,tsx,css",
+    "build:clean": "rm -rf dist && rm -rf .parcel-cache",
+    "build": "npm run build:clean && npm run extract-typings && parcel build",
     "extract-typings": "tsc --project tsconfig.types.json",
     "test": "jest",
     "test:watch": "jest --watch",
