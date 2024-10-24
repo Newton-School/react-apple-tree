@@ -1,11 +1,12 @@
-import React, { createContext, useState } from "react";
+import cloneDeep from 'lodash.clonedeep';
+import React, { createContext, useState } from 'react';
+
 import {
   ContextProviderProps,
   ReactAppleTreeProps,
   ThemeProps,
-} from "../types";
-import { defaultAppleTreeProps } from "../utils/default-props";
-import cloneDeep from "lodash.clonedeep";
+} from '../types';
+import { defaultAppleTreeProps } from '../utils/default-props';
 
 interface PropDataContextProps {
   appleTreeProps: ReactAppleTreeProps;
@@ -17,23 +18,23 @@ const PropDataContext = createContext<PropDataContextProps>({
   setAppleTreeProps: () => {},
 });
 
-const PropDataContextProvider = (
-  props: ContextProviderProps
-): React.JSX.Element => {
+function PropDataContextProvider(
+  props: ContextProviderProps,
+): React.JSX.Element {
   const [appleTreeProps, setAppleTreeProps] = useState<ReactAppleTreeProps>(
-    defaultAppleTreeProps
+    defaultAppleTreeProps,
   );
 
-  const mergeThemeProps = (props: any): ThemeProps => {
+  const mergeThemeProps = (themeProps: any): ThemeProps => {
     const mergedTheme: any = {
-      style: { ...props.theme?.style, ...props.style },
+      style: { ...themeProps.theme?.style, ...themeProps.style },
       innerStyle: {
-        ...props.theme?.innerStyle,
-        ...props.innerStyle,
+        ...themeProps.theme?.innerStyle,
+        ...themeProps.innerStyle,
       },
       reactVirtualizedListProps: {
-        ...props.theme?.reactVirtualizedListProps,
-        ...props.reactVirtualizedListProps,
+        ...themeProps.theme?.reactVirtualizedListProps,
+        ...themeProps.reactVirtualizedListProps,
       },
     };
     const overridableThemeDefaults: any = {
@@ -42,13 +43,13 @@ const PropDataContextProvider = (
       slideRegionSize: defaultAppleTreeProps.slideRegionSize,
     };
     Object.keys(overridableThemeDefaults).forEach((propKey) => {
-      if (props[propKey] === null) {
+      if (themeProps[propKey] === null) {
         mergedTheme[propKey] =
-          typeof props.theme[propKey] !== "undefined"
-            ? props.theme[propKey]
+          typeof themeProps.theme[propKey] !== 'undefined'
+            ? themeProps.theme[propKey]
             : overridableThemeDefaults[propKey];
       } else {
-        mergedTheme[propKey] = props[propKey];
+        mergedTheme[propKey] = themeProps[propKey];
       }
     });
     return mergedTheme;
@@ -68,7 +69,7 @@ const PropDataContextProvider = (
               ...appleTreeProps,
               ...props,
               ...mergedTheme,
-            })
+            }),
           );
         },
       }}
@@ -76,6 +77,6 @@ const PropDataContextProvider = (
       {props.children}
     </PropDataContext.Provider>
   );
-};
+}
 
 export { PropDataContext, PropDataContextProvider };

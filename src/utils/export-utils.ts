@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import {
   AddNodeAtDepthAndIndexFnParams,
   AddNodeAtDepthAndIndexFnReturnType,
@@ -40,7 +41,7 @@ import {
   WalkDescendantsFnParams,
   WalkFnParams,
   WalkFnReturnType,
-} from "../types";
+} from '../types';
 
 /**
  * Performs a depth-first traversal over all of the node descendants,
@@ -141,7 +142,7 @@ export function getVisibleNodeCount<T>({
     if (
       !node.children ||
       node.expanded !== true ||
-      typeof node.children === "function"
+      typeof node.children === 'function'
     ) {
       return 1;
     }
@@ -150,14 +151,14 @@ export function getVisibleNodeCount<T>({
       1 +
       node.children.reduce(
         (total, currentNode) => total + traverse(currentNode),
-        0
+        0,
       )
     );
   }
 
   return treeData.reduce(
     (total, currentNode) => total + traverse(currentNode),
-    0
+    0,
   );
 }
 
@@ -246,7 +247,7 @@ function walkDescendants<T>({
   // Get all descendants
   let childIndex: number | false = currentIndex;
   const childCount = node.children.length;
-  if (typeof node.children !== "function") {
+  if (typeof node.children !== 'function') {
     for (let i = 0; i < childCount; i += 1) {
       childIndex = walkDescendants({
         callback,
@@ -341,7 +342,7 @@ function mapDescendants<T>({
   // Get all descendants
   let childIndex = currentIndex;
   const childCount = nextNode.children.length;
-  if (typeof nextNode.children !== "function") {
+  if (typeof nextNode.children !== 'function') {
     nextNode.children = nextNode.children.map((child, i) => {
       const mapResult = mapDescendants({
         callback,
@@ -439,7 +440,7 @@ export function changeNodeAtPath<T>({
   getNodeKey,
   ignoreCollapsed = true,
 }: ChangeNodeAtPathFnParams<T>): ChangeNodeAtPathFnReturnType<T> {
-  const RESULT_MISS = "RESULT_MISS";
+  const RESULT_MISS = 'RESULT_MISS';
   const traverse = ({
     isPseudoRoot = false,
     node,
@@ -455,13 +456,13 @@ export function changeNodeAtPath<T>({
 
     if (pathIndex >= path.length - 1) {
       // If this is the final location in the path, return its changed form
-      return typeof newNode === "function"
+      return typeof newNode === 'function'
         ? newNode({ node, treeIndex: currentTreeIndex })
         : newNode;
     }
     if (!node.children) {
       // If this node is part of the path, but has no children, return the unchanged node
-      throw new Error("Path referenced children of node with no children.");
+      throw new Error('Path referenced children of node with no children.');
     }
 
     let nextTreeIndex = currentTreeIndex + 1;
@@ -513,7 +514,7 @@ export function changeNodeAtPath<T>({
   });
 
   if (result === RESULT_MISS) {
-    throw new Error("No node found at the given path.");
+    throw new Error('No node found at the given path.');
   }
 
   return result.children;
@@ -616,6 +617,7 @@ export function getNodeAtPath<T>({
         return node;
       },
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return null;
   }
@@ -691,8 +693,8 @@ export function addNodeUnderParent<T>({
         };
       }
 
-      if (typeof parentNode.children === "function") {
-        throw new Error("Cannot add to children defined by a function");
+      if (typeof parentNode.children === 'function') {
+        throw new Error('Cannot add to children defined by a function');
       }
 
       let nextTreeIndex = treeIndex + 1;
@@ -716,7 +718,7 @@ export function addNodeUnderParent<T>({
   });
 
   if (!hasBeenAdded) {
-    throw new Error("No node found with the given key.");
+    throw new Error('No node found with the given key.');
   }
 
   return {
@@ -749,8 +751,8 @@ function addNodeAtDepthAndIndex<T>({
     currentIndex >= minimumTreeIndex - 1 ||
     (isLastChild && !(node.children && node.children.length))
   ) {
-    if (typeof node.children === "function") {
-      throw new Error("Cannot add to children defined by a function");
+    if (typeof node.children === 'function') {
+      throw new Error('Cannot add to children defined by a function');
     } else {
       const extraNodeProps = expandParent ? { expanded: true } : {};
       const nextNode = {
@@ -775,7 +777,7 @@ function addNodeAtDepthAndIndex<T>({
     // Skip over nodes with no children or hidden children
     if (
       !node.children ||
-      typeof node.children === "function" ||
+      typeof node.children === 'function' ||
       (node.expanded !== true && ignoreCollapsed && !isPseudoRoot)
     ) {
       return { node, nextIndex: currentIndex + 1 };
@@ -836,7 +838,7 @@ function addNodeAtDepthAndIndex<T>({
   // Skip over nodes with no children or hidden children
   if (
     !node.children ||
-    typeof node.children === "function" ||
+    typeof node.children === 'function' ||
     (node.expanded !== true && ignoreCollapsed && !isPseudoRoot)
   ) {
     return { node, nextIndex: currentIndex + 1 };
@@ -848,7 +850,7 @@ function addNodeAtDepthAndIndex<T>({
   let parentNode = null;
   let childIndex = currentIndex + 1;
   let newChildren = node.children;
-  if (typeof newChildren !== "function") {
+  if (typeof newChildren !== 'function') {
     newChildren = newChildren.map((child, i) => {
       if (insertedTreeIndex !== null) {
         return child;
@@ -868,7 +870,7 @@ function addNodeAtDepthAndIndex<T>({
         path: [], // Cannot determine the parent path until the children have been processed
       });
 
-      if ("insertedTreeIndex" in mapResult) {
+      if ('insertedTreeIndex' in mapResult) {
         ({
           insertedTreeIndex,
           parentNode,
@@ -943,8 +945,8 @@ export function insertNode<T>({
     currentDepth: -1,
   });
 
-  if (!("insertedTreeIndex" in insertResult)) {
-    throw new Error("No suitable position found to insert.");
+  if (!('insertedTreeIndex' in insertResult)) {
+    throw new Error('No suitable position found to insert.');
   }
 
   const treeIndex = insertResult.insertedTreeIndex;
@@ -1006,7 +1008,7 @@ export function getTreeFromFlatData<T>({
   flatData,
   getKey = (node) => node.id,
   getParentKey = (node) => node.parentId,
-  rootKey = "0",
+  rootKey = '0',
 }: GetTreeFromFlatDataFnParams<T>): GetTreeFromFlatDataFnReturnType<T> {
   if (!flatData) {
     return [];
@@ -1052,13 +1054,13 @@ export function getTreeFromFlatData<T>({
  */
 export function isDescendant<T>(
   older: TreeItem<T>,
-  younger: TreeItem<T>
+  younger: TreeItem<T>,
 ): boolean {
   return (
     !!older.children &&
-    typeof older.children !== "function" &&
+    typeof older.children !== 'function' &&
     older.children.some(
-      (child) => child === younger || isDescendant(child, younger)
+      (child) => child === younger || isDescendant(child, younger),
     )
   );
 }
@@ -1077,13 +1079,13 @@ export function getDepth<T>(node: TreeItem<T>, depth: number = 0): number {
     return depth;
   }
 
-  if (typeof node.children === "function") {
+  if (typeof node.children === 'function') {
     return depth + 1;
   }
 
   return node.children.reduce(
     (deepest, child) => Math.max(deepest, getDepth(child, depth + 1)),
-    depth
+    depth,
   );
 }
 
@@ -1137,7 +1139,7 @@ export function find<T>({
     // Nodes with children that aren't lazy
     const hasChildren =
       node.children &&
-      typeof node.children !== "function" &&
+      typeof node.children !== 'function' &&
       node.children.length > 0;
 
     // Examine the current node to see if it is a match

@@ -1,6 +1,7 @@
-import React from "react";
-import TreeItem from "../TreeItem";
-import { FlatTreeItem } from "../../types";
+import React from 'react';
+
+import { FlatTreeItem } from '../../types';
+import TreeItem from '../TreeItem';
 
 interface ItemRendererProps {
   index: number;
@@ -8,7 +9,7 @@ interface ItemRendererProps {
   data: Array<FlatTreeItem>;
 }
 
-const ItemRenderer = ({ index, style, data }: ItemRendererProps) => {
+function ItemRenderer({ index, style, data }: ItemRendererProps) {
   return (
     <TreeItem
       key={data[index].mapId}
@@ -17,6 +18,6 @@ const ItemRenderer = ({ index, style, data }: ItemRendererProps) => {
       nodeIndex={index}
     />
   );
-};
+}
 
 export default ItemRenderer;

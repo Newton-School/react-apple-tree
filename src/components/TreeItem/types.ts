@@ -1,4 +1,4 @@
-import { RowDirection } from "../../types";
+import { RowDirection } from '../../types';
 
 export interface StyledTreeItemRowProps {
   $rowDirection?: RowDirection;
@@ -9,7 +9,7 @@ export interface StyledLineBlockProps {
   $scaffoldWidth: number;
 }
 
-export type highlightedLinePosition = "start" | "mid" | "end";
+export type highlightedLinePosition = 'start' | 'mid' | 'end';
 
 export interface StyledHighlightedLineBlockProps {
   $position: highlightedLinePosition;
@@ -21,9 +21,9 @@ export interface StyledRowMainButtonProps {
 }
 
 export enum DropZoneValues {
-  Self = "self",
-  Allow = "allow",
-  Disallow = "disallow",
+  Self = 'self',
+  Allow = 'allow',
+  Disallow = 'disallow',
 }
 export interface StyledRowMainContentWrapperProps {
   $isDragging?: boolean;

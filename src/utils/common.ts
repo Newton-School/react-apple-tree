@@ -6,12 +6,12 @@
  */
 export function generateUniqueId(length = 16): string {
   const characters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let id = "";
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let id = '';
 
   const timestamp = Date.now().toString(36);
 
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < length; i += 1) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     id += characters[randomIndex];
   }
@@ -26,28 +26,28 @@ export function generateUniqueId(length = 16): string {
  * @returns The text content of the React element.
  */
 export function getReactElementText(parent: any): string {
-  if (typeof parent === "string") {
+  if (typeof parent === 'string') {
     return parent;
   }
 
   if (
     parent === null ||
-    typeof parent !== "object" ||
+    typeof parent !== 'object' ||
     !parent.props ||
     !parent.props.children ||
-    (typeof parent.props.children !== "string" &&
-      typeof parent.props.children !== "object")
+    (typeof parent.props.children !== 'string' &&
+      typeof parent.props.children !== 'object')
   ) {
-    return "";
+    return '';
   }
 
-  if (typeof parent.props.children === "string") {
+  if (typeof parent.props.children === 'string') {
     return parent.props.children;
   }
 
   return parent.props.children
     .map((child: any) => getReactElementText(child))
-    .join("");
+    .join('');
 }
 
 /**
@@ -60,7 +60,7 @@ export function getReactElementText(parent: any): string {
  */
 export function removeItemAtGivenIndexFromArray<T>(
   array: T[],
-  index: number
+  index: number,
 ): T[] {
   if (index < 0 || index >= array.length) {
     return array;

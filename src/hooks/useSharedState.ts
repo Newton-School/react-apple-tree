@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 
 class SharedState {
   private static instance: SharedState;
-  private state: Record<string, any> = {};
-  private listeners: Set<() => void> = new Set();
 
-  private constructor() {}
+  private state: Record<string, any> = {};
+
+  private listeners: Set<() => void> = new Set();
 
   public static getInstance(): SharedState {
     if (!SharedState.instance) {
@@ -37,10 +37,10 @@ const sharedState = SharedState.getInstance();
 
 export function useSharedState<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T) => void] {
   const [value, setValue] = useState<T>(
-    () => sharedState.getState(key) ?? initialValue
+    () => sharedState.getState(key) ?? initialValue,
   );
 
   useEffect(() => {

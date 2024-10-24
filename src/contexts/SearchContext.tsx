@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import cloneDeep from 'lodash.clonedeep';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
 import {
   ContextProviderProps,
   FlatTreeItem,
@@ -7,12 +9,11 @@ import {
   SearchedNodeMap,
   TreeItem,
   TreeMap,
-} from "../types";
-import { dfs } from "../utils/tree-traversal";
-import { PropDataContext } from "./PropDataContext";
-import { TreeDataContext } from "./TreeDataContext";
-import { collapseTree, expandNode } from "../utils/node-operations";
-import cloneDeep from "lodash.clonedeep";
+} from '../types';
+import { collapseTree, expandNode } from '../utils/node-operations';
+import { dfs } from '../utils/tree-traversal';
+import { PropDataContext } from './PropDataContext';
+import { TreeDataContext } from './TreeDataContext';
 
 interface SearchContextProps {
   searchedNodeMap: SearchedNodeMap;
@@ -24,16 +25,14 @@ const SearchContext = createContext<SearchContextProps>({
   searchedNodeIndex: null,
 });
 
-const SearchContextProvider = (
-  props: ContextProviderProps
-): React.JSX.Element => {
+function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
   const { appleTreeProps } = useContext(PropDataContext);
   const { treeMap, flatTree, setTreeMap, setFlatTree } =
     useContext(TreeDataContext);
 
   const [searchedNodeMap, setSearchedNodeMap] = useState<SearchedNodeMap>({});
   const [searchedNodeIndex, setSearchedNodeIndex] = useState<number | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -46,13 +45,13 @@ const SearchContextProvider = (
     } else {
       if (
         appleTreeProps.onlyExpandSearchedNodes ||
-        appleTreeProps.searchQuery === ""
+        appleTreeProps.searchQuery === ''
       ) {
         newFlatArray = collapseTree(
           appleTreeProps.treeData,
           treeMap,
           flatTree,
-          appleTreeProps.getNodeKey
+          appleTreeProps.getNodeKey,
         );
       }
       if (appleTreeProps.searchQuery && appleTreeProps.searchMethod) {
@@ -95,7 +94,7 @@ const SearchContextProvider = (
                     newTreeMap[nodeKey],
                     newTreeMap,
                     newFlatArray,
-                    appleTreeProps.getNodeKey
+                    appleTreeProps.getNodeKey,
                   );
                   newTreeMap = { ...newTreeMap, ...map };
                   newFlatArray = [...flatArray];
@@ -113,7 +112,7 @@ const SearchContextProvider = (
               if (treeIndexStack.length > 1) {
                 treeIndexStack = Array.from(
                   treeIndexStack,
-                  () => treeIndexStack[treeIndexStack.length - 1]
+                  () => treeIndexStack[treeIndexStack.length - 1],
                 );
                 siblingStack = Array.from(siblingStack, () => 0);
               }
@@ -133,17 +132,17 @@ const SearchContextProvider = (
             } else {
               treeIndexStack.push(
                 treeIndexStack[treeIndexStack.length - 1] +
-                  siblingStack[path.length]
+                  siblingStack[path.length],
               );
             }
             path.push(
               appleTreeProps.getNodeKey({
                 node,
                 treeIndex: treeIndexStack[treeIndexStack.length - 1],
-              })
+              }),
             );
           },
-          onGoingOutside: (node: TreeItem) => {
+          onGoingOutside: () => {
             treeIndexStack.pop();
             if (lastDepth >= path.length) {
               lastDepth = path.length;
@@ -172,6 +171,6 @@ const SearchContextProvider = (
       {props.children}
     </SearchContext.Provider>
   );
-};
+}
 
 export { SearchContext, SearchContextProvider };

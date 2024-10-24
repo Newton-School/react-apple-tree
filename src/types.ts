@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 import {
   ConnectDragPreview,
   ConnectDragSource,
   ConnectDropTarget,
-} from "react-dnd";
-import { ListProps } from "react-window";
+} from 'react-dnd';
+import { ListProps } from 'react-window';
 
 export type FlatTreeItem = {
   mapId: NodeKey;
@@ -133,7 +133,7 @@ export interface NodeRendererProps<T = {}> {
   swapLength?: number | undefined;
   listIndex: number;
   treeId: string;
-  rowDirection?: "ltr" | "rtl" | undefined;
+  rowDirection?: 'ltr' | 'rtl' | undefined;
 
   connectDragPreview: ConnectDragPreview;
   connectDragSource: ConnectDragSource;
@@ -167,7 +167,7 @@ export interface TreeRendererProps<T = {}> {
   swapLength?: number | undefined;
   scaffoldBlockPxWidth: number;
   lowerSiblingCounts: number[];
-  rowDirection?: "ltr" | "rtl" | undefined;
+  rowDirection?: 'ltr' | 'rtl' | undefined;
 
   listIndex: number;
   children: React.JSX.Element[];
@@ -232,21 +232,21 @@ export type OnChangeFn<T> = (treeData: Array<TreeItem<T>>) => void;
 export type GetNodeKeyFn<T = {}> = (data: TreeNode<T> & TreeIndex) => NodeKey;
 export type GetFlatNodeKeyFn<T = {}> = (node: TreeItem<T> | any) => NodeKey;
 export type GenerateNodePropsFn<T> = (
-  data: ExtendedNodeData<T>
+  data: ExtendedNodeData<T>,
 ) => ExtendedNodeProps;
 export type OnMoveNodeFn<T> = (
-  data: NodeData<T> & FullTree<T> & OnMovePreviousAndNextLocation<T>
+  data: NodeData<T> & FullTree<T> & OnMovePreviousAndNextLocation<T>,
 ) => void;
 export type OnVisibilityToggleFn<T> = (data: OnVisibilityToggleData<T>) => void;
 export type OnDragStateChangedFn<T> = (data: OnDragStateChangedData<T>) => void;
 export type MaxDepth = number | undefined;
-export type RowDirection = "ltr" | "rtl" | undefined;
+export type RowDirection = 'ltr' | 'rtl' | undefined;
 export type CanDragFn =
   | ((data: ExtendedNodeData) => boolean)
   | boolean
   | undefined;
 export type CanDropFn<T> = (
-  data: OnDragPreviousAndNextLocation<T> & NodeData<T>
+  data: OnDragPreviousAndNextLocation<T> & NodeData<T>,
 ) => boolean;
 export type CanNodeHaveChildrenFn<T> = (node: TreeItem<T>) => boolean;
 export type SearchMethodFn<T> = (data: SearchData<T>) => boolean;

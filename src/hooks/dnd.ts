@@ -1,24 +1,25 @@
+import cloneDeep from 'lodash.clonedeep';
+import React, { useContext, useState } from 'react';
 import {
   ConnectDragPreview,
   ConnectDragSource,
   ConnectDropTarget,
   useDrag,
   useDrop,
-} from "react-dnd";
-import { FlatTreeItem } from "../types";
+} from 'react-dnd';
+
 import {
-  OnHoverNodeProps,
-  NodeAppendDirection,
-  DraggingNodeInformation,
-} from "../contexts/DNDContextTypes";
-import { useContext, useState } from "react";
-import { PropDataContext } from "../contexts/PropDataContext";
-import {
-  DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH,
   DEFAULT_DND_TYPE,
-} from "../constants";
-import { DNDContext } from "../contexts/DNDContext";
-import cloneDeep from "lodash.clonedeep";
+  DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH,
+} from '../constants';
+import { DNDContext } from '../contexts/DNDContext';
+import {
+  DraggingNodeInformation,
+  NodeAppendDirection,
+  OnHoverNodeProps,
+} from '../contexts/DNDContextTypes';
+import { PropDataContext } from '../contexts/PropDataContext';
+import { FlatTreeItem } from '../types';
 
 interface DragHookProps {
   nodeIndex: number;
@@ -125,7 +126,7 @@ export const useDropHook = ({
     DropHookReturnProps
   >({
     accept: dndType || DEFAULT_DND_TYPE,
-    drop: (item, monitor) => {
+    drop: () => {
       completeDrop();
     },
     collect: (monitor) => ({
@@ -169,10 +170,8 @@ export const useDropHook = ({
                 draggingNodeInformation: item.draggingNodeInformation,
               });
             }
-          } else {
-            if (!monitor.isOver()) {
-              setHoveredDepth(null);
-            }
+          } else if (!monitor.isOver()) {
+            setHoveredDepth(null);
           }
         }
       }

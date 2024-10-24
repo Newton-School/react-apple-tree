@@ -1,29 +1,30 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
+import { SHARED_IS_DRAGGING_NODE_STATE } from '../constants';
+import { useSharedState } from '../hooks/useSharedState';
 import {
   ContextProviderProps,
   FlatTreeItem,
   NumberOrStringArray,
-} from "../types";
-import { PropDataContext } from "./PropDataContext";
-import { TreeDataContext } from "./TreeDataContext";
-import {
-  OnHoverNodeProps,
-  DraggingNodeInformation,
-  DropZoneInformation,
-  NodeAppendDirection,
-  StartDragProps,
-} from "./DNDContextTypes";
+} from '../types';
+import { removeItemAtGivenIndexFromArray } from '../utils/common';
 import {
   calculateNodeDepth,
   collapseNode,
   expandNode,
   getParentKeyAndSiblingCountFromList,
   moveNodeToDifferentParent,
-} from "../utils/node-operations";
-import { removeItemAtGivenIndexFromArray } from "../utils/common";
-import { useSharedState } from "../hooks/useSharedState";
-import { SHARED_IS_DRAGGING_NODE_STATE } from "../constants";
-import { runCanNodeHaveChildren } from "../utils/prop-utils";
+} from '../utils/node-operations';
+import { runCanNodeHaveChildren } from '../utils/prop-utils';
+import {
+  DraggingNodeInformation,
+  DropZoneInformation,
+  NodeAppendDirection,
+  OnHoverNodeProps,
+  StartDragProps,
+} from './DNDContextTypes';
+import { PropDataContext } from './PropDataContext';
+import { TreeDataContext } from './TreeDataContext';
 
 interface DNDContextProps {
   isDraggingNode: boolean | null;
@@ -34,7 +35,7 @@ interface DNDContextProps {
   hoverNode: (params: OnHoverNodeProps) => void;
   completeDrop: (shouldRemoveDragDetailsOnly?: boolean) => void;
   getDraggingNodeInformationFromNodeIndex: (
-    nodeIndex: number
+    nodeIndex: number,
   ) => DraggingNodeInformation | null;
 }
 
@@ -43,20 +44,20 @@ const DNDContext = createContext<DNDContextProps>({
   setIsDraggingNode: () => {},
   draggingNodeInformation: null,
   dropzoneInformation: null,
-  startDrag: (params: StartDragProps) => {},
-  hoverNode: (params: OnHoverNodeProps) => {},
+  startDrag: () => {},
+  hoverNode: () => {},
   completeDrop: () => {},
-  getDraggingNodeInformationFromNodeIndex: (nodeIndex: number) => null,
+  getDraggingNodeInformationFromNodeIndex: () => null,
 });
 
-const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
+function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
   const { treeMap, setTreeMap, flatTree, setFlatTree } =
     useContext(TreeDataContext);
   const { appleTreeProps, setAppleTreeProps } = useContext(PropDataContext);
 
   const [isDraggingNode, setIsDraggingNode] = useSharedState<boolean>(
     SHARED_IS_DRAGGING_NODE_STATE,
-    false
+    false,
   );
   const [draggingNodeInformation, setDraggingNodeInformation] =
     useState<DraggingNodeInformation | null>(null);
@@ -66,7 +67,7 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
     useState<OnHoverNodeProps | null>(null);
 
   function getDraggingNodeInformationFromNodeIndex(
-    nodeIndex: number
+    nodeIndex: number,
   ): DraggingNodeInformation | null {
     const flatNode = flatTree[nodeIndex];
     const treeNode = treeMap[flatNode.mapId];
@@ -84,7 +85,7 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
     const flatNode = flatTree[params.nodeIndex];
     const treeNode = treeMap[flatNode.mapId];
     setDraggingNodeInformation(
-      getDraggingNodeInformationFromNodeIndex(params.nodeIndex)
+      getDraggingNodeInformationFromNodeIndex(params.nodeIndex),
     );
     const flatArray = collapseNode(flatNode.mapId, treeNode, treeMap, flatTree);
     setFlatTree([...flatArray]);
@@ -110,7 +111,9 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
 
   useEffect(() => {
     if (draggingNodeInformation && hoverNodeParams) {
-      if (!draggingNodeInformation) return;
+      if (!draggingNodeInformation) {
+        return;
+      }
       const flatNode = flatTree[hoverNodeParams.nodeIndex];
 
       // Calculate temp drop index
@@ -130,7 +133,7 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
       ) {
         newFlatList = removeItemAtGivenIndexFromArray(
           newFlatList,
-          draggingNodeInformation.dragStartIndex
+          draggingNodeInformation.dragStartIndex,
         );
         if (hoverDropIndex > draggingNodeInformation.dragStartIndex) {
           hoverDropIndex -= 1;
@@ -146,7 +149,7 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
       ) {
         newFlatList = removeItemAtGivenIndexFromArray(
           newFlatList,
-          dropzoneInformation.dropIndex
+          dropzoneInformation.dropIndex,
         );
         if (hoverDropIndex > dropzoneInformation.dropIndex) {
           hoverDropIndex -= 1;
@@ -179,17 +182,15 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
         const prevDepth = calculateNodeDepth(flatTree[tmpDropIndex - 1]);
         if (dropNodeDepth <= prevDepth) {
           dropNodeDepth = prevDepth;
+        } else if (
+          runCanNodeHaveChildren(
+            appleTreeProps.canNodeHaveChildren,
+            treeMap[flatTree[tmpDropIndex - 1].mapId],
+          )
+        ) {
+          dropNodeDepth = prevDepth + 1;
         } else {
-          if (
-            runCanNodeHaveChildren(
-              appleTreeProps.canNodeHaveChildren,
-              treeMap[flatTree[tmpDropIndex - 1].mapId]
-            )
-          ) {
-            dropNodeDepth = prevDepth + 1;
-          } else {
-            dropNodeDepth = prevDepth;
-          }
+          dropNodeDepth = prevDepth;
         }
       }
 
@@ -205,7 +206,7 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
             prevTreeNode,
             treeMap,
             newFlatList,
-            appleTreeProps.getNodeKey
+            appleTreeProps.getNodeKey,
           );
           newTreeMap = { ...map };
           newFlatList = [...updatedFlatList];
@@ -231,7 +232,7 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
       // Get position of node in tree
       const [parentKey, siblingCount] = getParentKeyAndSiblingCountFromList(
         flatTree,
-        hoverNodeParams.nodeIndex
+        hoverNodeParams.nodeIndex,
       );
 
       // Checking can drop
@@ -239,14 +240,14 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
       let prevParent = null;
       if (draggingNodeInformation.flatNode.path.at(-2)) {
         prevParent =
-          treeMap[draggingNodeInformation.flatNode.path.at(-2) || ""];
+          treeMap[draggingNodeInformation.flatNode.path.at(-2) || ''];
       }
       let nextParent = null;
       let nextParentPath: NumberOrStringArray = [];
       if (parentKey) {
         nextParent = treeMap[parentKey];
         const nextParentIndex = newFlatList.findIndex(
-          (node) => node.mapId === parentKey
+          (node) => node.mapId === parentKey,
         );
         if (nextParentIndex !== -1) {
           nextParentPath = newFlatList[nextParentIndex].path;
@@ -257,10 +258,10 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
         node: draggingNodeInformation.treeNode,
         path: [...nextParentPath, draggingNodeInformation.flatNode.mapId],
         treeIndex: draggingNodeInformation.dragStartIndex,
-        nextParent: nextParent,
+        nextParent,
         nextPath: [...nextParentPath, draggingNodeInformation.flatNode.mapId],
         nextTreeIndex: actualDropIndex - 1,
-        prevParent: prevParent,
+        prevParent,
         prevPath: draggingNodeInformation.flatNode.path,
         prevTreeIndex: draggingNodeInformation.dragStartIndex,
       };
@@ -278,12 +279,10 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
         hoverDropDepth === draggingNodeInformation.dragStartDepth
       ) {
         newFlatNode.draggingNode = true;
+      } else if (canDrop) {
+        newFlatNode.dropSuccessNode = true;
       } else {
-        if (canDrop) {
-          newFlatNode.dropSuccessNode = true;
-        } else {
-          newFlatNode.dropErrorNode = true;
-        }
+        newFlatNode.dropErrorNode = true;
       }
       newFlatList = [
         ...newFlatList.slice(0, hoverDropIndex),
@@ -302,8 +301,8 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
         flatList: newFlatList,
         nextParentKey: parentKey,
         siblingIndex: siblingCount,
-        canDrop: canDrop,
-        moveNodeData: moveNodeData,
+        canDrop,
+        moveNodeData,
       });
     }
   }, [draggingNodeInformation, hoverNodeParams]);
@@ -320,7 +319,7 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
           draggingNodeInformation.flatNode.parentKey,
           dropzoneInformation.nextParentKey,
           dropzoneInformation.siblingIndex,
-          appleTreeProps.getNodeKey
+          appleTreeProps.getNodeKey,
         );
         if (draggingNodeInformation.initialExpanded) {
           draggingNodeInformation.treeNode.expanded = true;
@@ -354,6 +353,6 @@ const DNDContextProvider = (props: ContextProviderProps): React.JSX.Element => {
       {props.children}
     </DNDContext.Provider>
   );
-};
+}
 
 export { DNDContext, DNDContextProvider };

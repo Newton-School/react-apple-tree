@@ -1,4 +1,5 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
+
 import {
   DropZoneValues,
   StyledHighlightedLineBlockProps,
@@ -6,13 +7,12 @@ import {
   StyledRowMainButtonProps,
   StyledRowMainContentWrapperProps,
   StyledTreeItemRowProps,
-} from "./types";
+} from './types';
 
 export const StyledTreeItemRow = styled.div<StyledTreeItemRowProps>`
   min-height: ${({ $rowHeight }) => $rowHeight + 10}px;
   display: flex;
-  flex-direction: ${({ $rowDirection }) =>
-    $rowDirection ? ($rowDirection === "rtl" ? "row-reverse" : "row") : "row"};
+  flex-direction: row;
   white-space: nowrap;
 `;
 
@@ -27,12 +27,12 @@ const StyledLineBlock = styled.div<StyledLineBlockProps>`
 
   &::after {
     position: absolute;
-    content: "";
+    content: '';
     background-color: var(--ns-rat-tree-lines-color);
   }
   &::before {
     position: absolute;
-    content: "";
+    content: '';
     background-color: var(--ns-rat-tree-lines-color);
   }
 `;
@@ -73,7 +73,7 @@ export const StyledVerticalAndHorizontalLineBlock = styled(StyledLineBlock)`
 `;
 
 export const StlyedHighlightedLineBlock = styled(
-  StyledLineBlock
+  StyledLineBlock,
 )<StyledHighlightedLineBlockProps>`
   &::after {
     z-index: 1;
@@ -88,7 +88,7 @@ export const StlyedHighlightedLineBlock = styled(
     right: 0;
   }
   ${({ $position }) =>
-    $position === "start" &&
+    $position === 'start' &&
     css`
       &::after {
         height: 50%;
@@ -100,7 +100,7 @@ export const StlyedHighlightedLineBlock = styled(
       }
     `}
   ${({ $position }) =>
-    $position === "mid" &&
+    $position === 'mid' &&
     css`
       &::after {
         height: 100%;
@@ -111,7 +111,7 @@ export const StlyedHighlightedLineBlock = styled(
       }
     `}
   ${({ $position }) =>
-    $position === "end" &&
+    $position === 'end' &&
     css`
       &::after {
         height: 100%;
@@ -139,7 +139,7 @@ export const StyledRowMainButtonSvgContainer = styled.div<StyledRowMainButtonPro
   align-items: center;
   text-align: center;
   position: absolute;
-  content: "";
+  content: '';
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center;
@@ -177,7 +177,7 @@ export const StyledRowMainContentWrapper = styled.div<StyledRowMainContentWrappe
     ($isDragging || $dropzone) &&
     css`
       &:before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         left: 0;

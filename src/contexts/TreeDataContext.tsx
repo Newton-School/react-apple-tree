@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
-import { ContextProviderProps, FlatTreeItem, NodeKey, TreeMap } from "../types";
-import { PropDataContext } from "./PropDataContext";
+import React, { createContext, useContext, useMemo, useState } from 'react';
+
+import { ContextProviderProps, FlatTreeItem, NodeKey, TreeMap } from '../types';
 import {
   collapseNode,
   expandNode,
   flattenTreeData,
-} from "../utils/node-operations";
+} from '../utils/node-operations';
+import { PropDataContext } from './PropDataContext';
 
 interface TreeContextProps {
   treeMap: TreeMap;
@@ -23,9 +24,9 @@ const TreeDataContext = createContext<TreeContextProps>({
   expandOrCollapseNode: () => {},
 });
 
-const TreeDataContextProvider = (
-  props: ContextProviderProps
-): React.JSX.Element => {
+function TreeDataContextProvider(
+  props: ContextProviderProps,
+): React.JSX.Element {
   const [treeMap, setTreeMap] = useState<TreeMap>({});
   const [flatTree, setFlatTree] = useState<Array<FlatTreeItem>>([]);
   const { appleTreeProps } = useContext(PropDataContext);
@@ -34,7 +35,7 @@ const TreeDataContextProvider = (
     if (appleTreeProps && appleTreeProps.treeData) {
       const [map, flatArray] = flattenTreeData(
         appleTreeProps.treeData,
-        appleTreeProps.getNodeKey
+        appleTreeProps.getNodeKey,
       );
       setTreeMap({ ...map });
       setFlatTree([...flatArray]);
@@ -48,7 +49,7 @@ const TreeDataContextProvider = (
         treeMap[nodeKey],
         treeMap,
         flatTree,
-        appleTreeProps.getNodeKey
+        appleTreeProps.getNodeKey,
       );
 
       setTreeMap({ ...map });
@@ -58,7 +59,7 @@ const TreeDataContextProvider = (
         nodeKey,
         treeMap[nodeKey],
         treeMap,
-        flatTree
+        flatTree,
       );
       setFlatTree([...flatArray]);
     }
@@ -78,6 +79,6 @@ const TreeDataContextProvider = (
       {props.children}
     </TreeDataContext.Provider>
   );
-};
+}
 
 export { TreeDataContext, TreeDataContextProvider };

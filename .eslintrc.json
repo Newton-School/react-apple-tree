@@ -20,19 +20,20 @@
   "rules": {
     "indent": [
       "error",
-      4,
+      2,
       {
         "SwitchCase": 1
       }
     ],
     "curly": ["error", "all"],
-    "react/jsx-indent": ["error", 4],
-    "react/jsx-indent-props": ["error", 4],
+    "react/jsx-indent": ["error", 2],
+    "react/jsx-indent-props": ["error", 2],
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
     "quotes": ["warn", "single"],
     "semi": ["error", "always"],
     "no-console": "error",
+    "no-compare-neg-zero": "off",
     "no-underscore-dangle": "off",
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error",
@@ -61,8 +62,10 @@
     ],
     "react/forbid-prop-types": "off",
     "react/prop-types": "off",
+    "react/destructuring-assignment": "off",
+    "react/jsx-no-constructed-context-values": "off",
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/no-shadow": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",

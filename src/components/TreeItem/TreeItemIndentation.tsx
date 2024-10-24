@@ -1,4 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable indent */
+/* eslint-disable no-nested-ternary */
+
+import React, { useContext, useEffect, useState } from 'react';
+
+import { DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH } from '../../constants';
+import { DNDContext } from '../../contexts/DNDContext';
+import { PropDataContext } from '../../contexts/PropDataContext';
+import { FlatTreeItem } from '../../types';
+import { calculateNodeDepth } from '../../utils/node-operations';
+import { getActualDropLineInformation } from '../../utils/node-style';
 import {
   StlyedHighlightedLineBlock,
   StyledEmptyBlock,
@@ -6,20 +17,14 @@ import {
   StyledTreeItemIndentation,
   StyledVerticalAndHorizontalLineBlock,
   StyledVerticalLineBlock,
-} from "./index.styles";
-import { PropDataContext } from "../../contexts/PropDataContext";
-import { DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH } from "../../constants";
-import { DNDContext } from "../../contexts/DNDContext";
-import { getActualDropLineInformation } from "../../utils/node-style";
-import { FlatTreeItem } from "../../types";
-import { calculateNodeDepth } from "../../utils/node-operations";
+} from './index.styles';
 
 interface TreeItemIndentationProps {
   nodeIndex: number;
   node: FlatTreeItem;
 }
 
-const TreeItemIndentation = ({ nodeIndex, node }: TreeItemIndentationProps) => {
+function TreeItemIndentation({ nodeIndex, node }: TreeItemIndentationProps) {
   const { appleTreeProps } = useContext(PropDataContext);
   const { dropzoneInformation } = useContext(DNDContext);
   const [depth, setDepth] = useState(calculateNodeDepth(node) - 1);
@@ -73,10 +78,10 @@ const TreeItemIndentation = ({ nodeIndex, node }: TreeItemIndentationProps) => {
               }
               $position={
                 startActualDropLine
-                  ? "start"
+                  ? 'start'
                   : midActualDropLine
-                    ? "mid"
-                    : "end"
+                    ? 'mid'
+                    : 'end'
               }
             />
           ) : (
@@ -87,7 +92,7 @@ const TreeItemIndentation = ({ nodeIndex, node }: TreeItemIndentationProps) => {
                 DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
               }
             />
-          )
+          ),
         )}
       {startActualDropLine ? (
         <StlyedHighlightedLineBlock
@@ -116,6 +121,6 @@ const TreeItemIndentation = ({ nodeIndex, node }: TreeItemIndentationProps) => {
       )}
     </StyledTreeItemIndentation>
   );
-};
+}
 
 export default TreeItemIndentation;

@@ -4,11 +4,11 @@ import {
   NodeKey,
   OnDragPreviousAndNextLocation,
   TreeItem,
-} from "../types";
+} from '../types';
 
 export enum NodeAppendDirection {
-  Above = "above",
-  Below = "below",
+  Above = 'above',
+  Below = 'below',
 }
 
 export type DraggingNodeInformation = {

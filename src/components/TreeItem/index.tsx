@@ -1,4 +1,18 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+
+import DragHandle from '../../assets/DragHandle';
+import TriangleSvg from '../../assets/Triangle';
+import {
+  DEFAULT_ROW_HEIGHT,
+  DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH,
+} from '../../constants';
+import { DNDContext } from '../../contexts/DNDContext';
+import { PropDataContext } from '../../contexts/PropDataContext';
+import { SearchContext } from '../../contexts/SearchContext';
+import { TreeDataContext } from '../../contexts/TreeDataContext';
+import { useDragHook, useDropHook } from '../../hooks/dnd';
+import { ExtendedNodeData, ExtendedNodeProps, FlatTreeItem } from '../../types';
+import { checkCanDragNode } from '../../utils/prop-utils';
 import {
   StyledRowButtonsWrapper,
   StyledRowDragIcon,
@@ -8,22 +22,9 @@ import {
   StyledRowTitleContentWrapper,
   StyledTreeItemContent,
   StyledTreeItemRow,
-} from "./index.styles";
-import { TreeDataContext } from "../../contexts/TreeDataContext";
-import { PropDataContext } from "../../contexts/PropDataContext";
-import { DNDContext } from "../../contexts/DNDContext";
-import { ExtendedNodeData, ExtendedNodeProps, FlatTreeItem } from "../../types";
-import { useDragHook, useDropHook } from "../../hooks/dnd";
-import DragHandle from "../../assets/DragHandle";
-import TriangleSvg from "../../assets/Triangle";
-import { DropZoneValues } from "./types";
-import { checkCanDragNode } from "../../utils/prop-utils";
-import { SearchContext } from "../../contexts/SearchContext";
-import {
-  DEFAULT_ROW_HEIGHT,
-  DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH,
-} from "../../constants";
-import TreeItemIndentation from "./TreeItemIndentation";
+} from './index.styles';
+import TreeItemIndentation from './TreeItemIndentation';
+import { DropZoneValues } from './types';
 
 interface TreeItemComponentProps {
   style?: React.CSSProperties;
@@ -31,7 +32,7 @@ interface TreeItemComponentProps {
   node: FlatTreeItem;
 }
 
-const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
+function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
   const { appleTreeProps } = useContext(PropDataContext);
   const { treeMap, expandOrCollapseNode } = useContext(TreeDataContext);
   const {
@@ -47,7 +48,7 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
 
   const [treeNode, setTreeNode] = useState(treeMap[node.mapId]);
   const [parentNode, setParentNode] = useState(
-    treeMap[node.path[node.path.length - 1]]
+    treeMap[node.path[node.path.length - 1]],
   );
   const [extendedNodeData, setExtendedNodeData] = useState<ExtendedNodeData>({
     node: treeNode,
@@ -65,7 +66,7 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
     setExtendedNodeData({
       node: treeNode,
       isSearchFocus:
-        typeof appleTreeProps.searchFocusOffset === "number" &&
+        typeof appleTreeProps.searchFocusOffset === 'number' &&
         !!searchedNodeMap[node.mapId] &&
         searchedNodeIndex === nodeIndex,
       isSearchMatch: !!searchedNodeMap[node.mapId],
@@ -77,10 +78,10 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
   }, [treeNode, searchedNodeIndex, searchedNodeMap]);
 
   useEffect(() => {
-    if (typeof appleTreeProps.canDrag !== "undefined") {
+    if (typeof appleTreeProps.canDrag !== 'undefined') {
       const checkDrag = checkCanDragNode(
         appleTreeProps.canDrag,
-        extendedNodeData
+        extendedNodeData,
       );
       setCanDragNode(checkDrag);
     }
@@ -124,22 +125,19 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
   useEffect(() => {
     if (isDragging) {
       startDrag({ nodeIndex, flatNode: node });
-    } else {
-      if (
-        dropzoneInformation &&
-        draggingNodeInformation &&
-        !draggingNodeInformation.externalDrag &&
-        node.mapId === draggingNodeInformation.flatNode.mapId
-      ) {
-        completeDrop(true);
-        setIsDraggingNode(false);
-      }
+    } else if (
+      dropzoneInformation &&
+      draggingNodeInformation &&
+      !draggingNodeInformation.externalDrag &&
+      node.mapId === draggingNodeInformation.flatNode.mapId
+    ) {
+      completeDrop(true);
+      setIsDraggingNode(false);
     }
   }, [isDragging]);
 
   useEffect(() => {
-    if (isDraggingNode) {
-    } else {
+    if (!isDraggingNode) {
       if (
         dropzoneInformation &&
         draggingNodeInformation &&
@@ -156,7 +154,7 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
       style={{ ...style }}
       $rowDirection={appleTreeProps.rowDirection}
       $rowHeight={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
-      ref={(node) => dropRef(node)}
+      ref={(dropNode) => dropRef(dropNode)}
       role="row"
       data-testid={`tree-item-${node.mapId}`}
     >
@@ -179,17 +177,18 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
           </StyledRowMainButton>
         )}
         <StyledRowMainContentWrapper
-          className={nodePropsData.className || ""}
+          className={nodePropsData.className || ''}
           style={{ ...nodePropsData.style }}
-          ref={(node) => dragPreview(node)}
+          ref={(dragPreviewNode) => dragPreview(dragPreviewNode)}
           $isSearchedNode={!!searchedNodeMap[node.mapId]}
           $isSearchFocus={
-            typeof appleTreeProps.searchFocusOffset === "number" &&
+            typeof appleTreeProps.searchFocusOffset === 'number' &&
             !!searchedNodeMap[node.mapId] &&
             searchedNodeIndex === nodeIndex
           }
           $isDragging={isDragging}
           $dropzone={
+            // eslint-disable-next-line no-nested-ternary
             node.dropSuccessNode
               ? DropZoneValues.Allow
               : node.dropErrorNode
@@ -199,7 +198,7 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
         >
           {canDragNode && (
             <StyledRowDragIcon
-              ref={(node) => dragRef(node)}
+              ref={(dragNode) => dragRef(dragNode)}
               data-testid={`tree-item-drag-handle-${node.mapId}`}
             >
               <DragHandle />
@@ -209,7 +208,7 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
             {nodePropsData.title ? (
               nodePropsData.title()
             ) : (
-              <div>{treeNode.title || ""}</div>
+              <div>{treeNode.title || ''}</div>
             )}
           </StyledRowTitleContentWrapper>
           {nodePropsData.buttons && (
@@ -221,6 +220,6 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
       </StyledTreeItemContent>
     </StyledTreeItemRow>
   );
-};
+}
 
 export default TreeItem;

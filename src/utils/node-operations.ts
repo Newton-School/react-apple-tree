@@ -5,26 +5,26 @@ import {
   NumberOrStringArray,
   TreeItem,
   TreeMap,
-} from "../types";
+} from '../types';
 import {
   insertItemsIntoArrayAtGivenIndex,
   removeItemAtGivenIndexFromArray,
-} from "./common";
+} from './common';
 
 export function flattenTreeData<T>(
   treeData: Array<TreeItem<T>>,
   getNodeKey: GetNodeKeyFn<T>,
   initialPath: NumberOrStringArray = [],
-  parentKey: NodeKey | null = null
+  parentKey: NodeKey | null = null,
 ): [TreeMap, Array<FlatTreeItem>] {
   const flattenedArray: Array<FlatTreeItem> = [];
   const map: TreeMap = {};
 
   const flattenNode = (
     node: TreeItem<T>,
-    path: NumberOrStringArray = [],
     parentKey: NodeKey | null,
-    addToRenderList: boolean = true
+    path: NumberOrStringArray = [],
+    addToRenderList: boolean = true,
   ): void => {
     const mapId = getNodeKey({ node, treeIndex: -1 });
     map[mapId] = node;
@@ -33,11 +33,11 @@ export function flattenTreeData<T>(
     }
 
     (node.children || []).forEach((child) =>
-      flattenNode(child, [...path, mapId], mapId, !!node.expanded)
+      flattenNode(child, mapId, [...path, mapId], !!node.expanded),
     );
   };
 
-  treeData.forEach((node) => flattenNode(node, initialPath, parentKey));
+  treeData.forEach((node) => flattenNode(node, parentKey, initialPath));
 
   return [map, flattenedArray];
 }
@@ -47,7 +47,7 @@ export function expandNode<T>(
   node: TreeItem<T>,
   treeMap: TreeMap,
   flatTree: Array<FlatTreeItem>,
-  getNodeKey: GetNodeKeyFn<T>
+  getNodeKey: GetNodeKeyFn<T>,
 ): [TreeMap, Array<FlatTreeItem>] {
   const idx = flatTree.findIndex((el) => el.mapId === nodeKey);
   if (idx !== -1 && !node.expanded) {
@@ -56,7 +56,7 @@ export function expandNode<T>(
       [node],
       getNodeKey,
       flatTree[idx].path.slice(0, -1),
-      flatTree[idx].parentKey
+      flatTree[idx].parentKey,
     );
     treeMap = { ...treeMap, ...map };
     flatTree = [
@@ -72,7 +72,7 @@ export function collapseNode<T>(
   nodeKey: NodeKey,
   node: TreeItem<T>,
   treeMap: TreeMap,
-  flatTree: Array<FlatTreeItem>
+  flatTree: Array<FlatTreeItem>,
 ): Array<FlatTreeItem> {
   const idx = flatTree.findIndex((el) => el.mapId === nodeKey);
   if (idx !== -1 && node.expanded) {
@@ -98,7 +98,7 @@ export function collapseTree<T>(
   treeData: Array<TreeItem<T>>,
   treeMap: TreeMap,
   flatTree: Array<FlatTreeItem>,
-  getNodeKey: GetNodeKeyFn<T>
+  getNodeKey: GetNodeKeyFn<T>,
 ): Array<FlatTreeItem> {
   treeData.forEach((node) => {
     if (node.expanded) {
@@ -106,7 +106,7 @@ export function collapseTree<T>(
         getNodeKey({ node, treeIndex: -1 }),
         node,
         treeMap,
-        flatTree
+        flatTree,
       );
     }
   });
@@ -123,7 +123,7 @@ export function calculateNodeDepth(flatNode: FlatTreeItem): number {
 
 export function getParentKeyAndSiblingCountFromList(
   flatTree: Array<FlatTreeItem>,
-  nodeIndex: number
+  nodeIndex: number,
 ): [NodeKey | null, number] {
   const flatNode = flatTree[nodeIndex];
   const nodeDepth = calculateNodeDepth(flatNode);
@@ -155,7 +155,7 @@ export function moveNodeToDifferentParent(
   prevParentKey: NodeKey | null,
   nextParentKey: NodeKey | null,
   siblingIndex: number,
-  getNodeKey: GetNodeKeyFn
+  getNodeKey: GetNodeKeyFn,
 ): Array<TreeItem> {
   const treeNode = treeMap[nodeKey];
 
@@ -163,7 +163,7 @@ export function moveNodeToDifferentParent(
   const prevParent = prevParentKey ? treeMap[prevParentKey] : null;
   let prevChildren = prevParent ? prevParent.children || [] : treeData;
   const idx = prevChildren.findIndex(
-    (node) => nodeKey === getNodeKey({ node, treeIndex: -1 })
+    (node) => nodeKey === getNodeKey({ node, treeIndex: -1 }),
   );
   prevChildren = removeItemAtGivenIndexFromArray(prevChildren, idx);
   if (prevParent) {
@@ -180,7 +180,7 @@ export function moveNodeToDifferentParent(
   nextChildren = insertItemsIntoArrayAtGivenIndex(
     nextChildren,
     siblingIndex,
-    treeNode
+    treeNode,
   );
   if (nextParent) {
     nextParent.children = nextChildren;

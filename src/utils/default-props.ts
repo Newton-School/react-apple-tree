@@ -1,18 +1,16 @@
-import { getReactElementText } from "./common";
-import { ReactAppleTreeProps } from "../types";
 import {
+  DEFAULT_DND_TYPE,
   DEFAULT_ROW_HEIGHT,
   DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH,
   DEFAULT_SLIDE_REGION_SIZE,
-  DEFAULT_DND_TYPE,
-} from "../constants";
+} from '../constants';
+import { ReactAppleTreeProps } from '../types';
+import { getReactElementText } from './common';
 
 export const defaultAppleTreeProps: ReactAppleTreeProps = {
   treeData: [],
   onChange: () => {},
-  getNodeKey: () => {
-    return -1;
-  },
+  getNodeKey: () => -1,
   canDrag: true,
   canDrop: () => true,
   canNodeHaveChildren: true,
@@ -20,7 +18,7 @@ export const defaultAppleTreeProps: ReactAppleTreeProps = {
     let titleMatch: boolean = false;
     let subtitleMatch = false;
 
-    if (typeof node.title === "object") {
+    if (typeof node.title === 'object') {
       titleMatch = getReactElementText(node.title).indexOf(searchQuery) > -1;
     } else {
       titleMatch = node.title
@@ -28,7 +26,7 @@ export const defaultAppleTreeProps: ReactAppleTreeProps = {
         : false;
     }
 
-    if (typeof node.subtitle === "object") {
+    if (typeof node.subtitle === 'object') {
       subtitleMatch =
         getReactElementText(node.subtitle).indexOf(searchQuery) > -1;
     } else {

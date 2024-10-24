@@ -1,5 +1,5 @@
-import { NodeKey, SearchData, TreeIndex } from "../types";
-import { defaultAppleTreeProps } from "./default-props";
+import { NodeKey, SearchData, TreeIndex } from '../types';
+import { defaultAppleTreeProps } from './default-props';
 
 export function defaultGetNodeKey({ treeIndex }: TreeIndex): NodeKey {
   return treeIndex;
