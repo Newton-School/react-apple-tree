@@ -3,6 +3,7 @@ import {
   StyledRowButtonsWrapper,
   StyledRowDragIcon,
   StyledRowMainButton,
+  StyledRowMainButtonSvgContainer,
   StyledRowMainContentWrapper,
   StyledRowTitleContentWrapper,
   StyledTreeItemContent,
@@ -14,6 +15,7 @@ import { DNDContext } from "../../contexts/DNDContext";
 import { ExtendedNodeData, ExtendedNodeProps, FlatTreeItem } from "../../types";
 import { useDragHook, useDropHook } from "../../hooks/dnd";
 import DragHandle from "../../assets/DragHandle";
+import TriangleSvg from "../../assets/Triangle";
 import { DropZoneValues } from "./types";
 import { checkCanDragNode } from "../../utils/prop-utils";
 import { SearchContext } from "../../contexts/SearchContext";
@@ -162,14 +164,19 @@ const TreeItem = ({ style, nodeIndex, node }: TreeItemComponentProps) => {
       <StyledTreeItemContent ref={nodeElement}>
         {treeNode.children && treeNode.children.length > 0 && (
           <StyledRowMainButton
-            $isCollapsed={!treeNode.expanded}
-            $scaffoldWidth={
-              appleTreeProps.scaffoldBlockPxWidth ||
-              DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
-            }
             onClick={() => expandOrCollapseNode(node.mapId)}
             data-testid={`tree-item-visibility-toggle-button-${node.mapId}`}
-          />
+          >
+            <StyledRowMainButtonSvgContainer
+              $isCollapsed={!treeNode.expanded}
+              $scaffoldWidth={
+                appleTreeProps.scaffoldBlockPxWidth ||
+                DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
+              }
+            >
+              <TriangleSvg />
+            </StyledRowMainButtonSvgContainer>
+          </StyledRowMainButton>
         )}
         <StyledRowMainContentWrapper
           className={nodePropsData.className || ""}

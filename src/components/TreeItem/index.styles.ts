@@ -124,35 +124,34 @@ export const StlyedHighlightedLineBlock = styled(
     `}
 `;
 
-export const StyledRowMainButton = styled.div<StyledRowMainButtonProps>`
+export const StyledRowMainButton = styled.div`
   height: 100%;
   position: relative;
   cursor: pointer;
+`;
 
-  &::before {
-    height: 12px;
-    width: 12px;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: absolute;
-    content: "";
-    border-radius: 50%;
-    background-image: url("../../assets/Triangle.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    transition: transform 0.3s;
-    ${({ $isCollapsed }) =>
-      $isCollapsed &&
-      css`
-        transform: rotate(-90deg);
-      `}
-    font-size: 10px;
-    top: calc(50% - 6px);
-    left: -${({ $scaffoldWidth }) => 6 + $scaffoldWidth / 2}px;
-  }
+export const StyledRowMainButtonSvgContainer = styled.div<StyledRowMainButtonProps>`
+  height: 12px;
+  width: 12px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: absolute;
+  content: "";
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.3s;
+  ${({ $isCollapsed }) =>
+    $isCollapsed &&
+    css`
+      transform: rotate(-90deg);
+    `}
+  font-size: 10px;
+  top: calc(50% - 6px);
+  left: -${({ $scaffoldWidth }) => 6 + $scaffoldWidth / 2}px;
 `;
 
 export const StyledRowMainContentWrapper = styled.div<StyledRowMainContentWrapperProps>`
