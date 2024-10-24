@@ -138,7 +138,17 @@ export const StyledRowMainButton = styled.div<StyledRowMainButtonProps>`
     align-items: center;
     text-align: center;
     position: absolute;
-    ${({ $isCollapsed }) => ($isCollapsed ? "content: '►';" : "content: '▼';")}
+    content: "";
+    border-radius: 50%;
+    background-image: url("../../assets/Triangle.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.3s;
+    ${({ $isCollapsed }) =>
+      $isCollapsed &&
+      css`
+        transform: rotate(-90deg);
+      `}
     font-size: 10px;
     top: calc(50% - 6px);
     left: -${({ $scaffoldWidth }) => 6 + $scaffoldWidth / 2}px;
