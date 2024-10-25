@@ -1,8 +1,8 @@
-import { DropZoneInformation } from "../contexts/DNDContextTypes";
+import { DropZoneInformation } from '../contexts/DNDContextTypes';
 
 export function getActualDropLineInformation(
   nodeIndex: number,
-  dropzoneInformation: DropZoneInformation | null
+  dropzoneInformation: DropZoneInformation | null,
 ) {
   const showActualDropLines = dropzoneInformation
     ? (dropzoneInformation.actualDropIndex || -1) >

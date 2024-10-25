@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const StyledReactAppleTree = styled.div`
   --ns-rat-node-hover-color: #dde4f6;

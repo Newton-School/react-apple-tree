@@ -35,6 +35,7 @@
     "no-console": "error",
     "no-compare-neg-zero": "off",
     "no-underscore-dangle": "off",
+    "no-param-reassign": "off",
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error",
     "import/prefer-default-export": "off",

@@ -11,6 +11,13 @@ import {
   removeItemAtGivenIndexFromArray,
 } from './common';
 
+export function calculateNodeDepth(flatNode: FlatTreeItem): number {
+  if (flatNode.forcedDepth) {
+    return flatNode.forcedDepth;
+  }
+  return flatNode.path.length;
+}
+
 export function flattenTreeData<T>(
   treeData: Array<TreeItem<T>>,
   getNodeKey: GetNodeKeyFn<T>,
@@ -113,14 +120,6 @@ export function collapseTree<T>(
   return flatTree;
 }
 
-export function calculateNodeDepth(flatNode: FlatTreeItem): number {
-  if (flatNode.forcedDepth) {
-    return flatNode.forcedDepth;
-  } else {
-    return flatNode.path.length;
-  }
-}
-
 export function getParentKeyAndSiblingCountFromList(
   flatTree: Array<FlatTreeItem>,
   nodeIndex: number,
@@ -135,7 +134,7 @@ export function getParentKeyAndSiblingCountFromList(
   while (start >= 0) {
     const sibling = flatTree[start];
     if (calculateNodeDepth(sibling) === nodeDepth) {
-      siblingCount++;
+      siblingCount += 1;
     } else if (calculateNodeDepth(sibling) < nodeDepth) {
       parentKey = sibling.mapId;
       break;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function DragHandle({ fill = '#000000', height = '14', width = '14' }) {
+function DragHandle({ height = '14', width = '14' }) {
   return (
     <svg
       version="1.1"

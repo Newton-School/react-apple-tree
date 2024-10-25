@@ -1,4 +1,4 @@
-import { GetNodeKeyFn, TreeItem } from "../types";
+import { GetNodeKeyFn, TreeItem } from '../types';
 
 interface DFSProps<T> {
   treeData: Array<TreeItem<T>>;

@@ -1,17 +1,15 @@
-import React from "react";
+import React from 'react';
 
-import { ReactAppleTreeProps } from "./types";
-
-import { TreeDataContextProvider } from "./contexts/TreeDataContext";
-import { PropDataContextProvider } from "./contexts/PropDataContext";
-import { DNDContextProvider } from "./contexts/DNDContext";
-
-import TreeList from "./components/TreeList";
-import { SearchContextProvider } from "./contexts/SearchContext";
-import { StyledReactAppleTree } from "./ReactAppleTree.styles";
+import TreeList from './components/TreeList';
+import { DNDContextProvider } from './contexts/DNDContext';
+import { PropDataContextProvider } from './contexts/PropDataContext';
+import { SearchContextProvider } from './contexts/SearchContext';
+import { TreeDataContextProvider } from './contexts/TreeDataContext';
+import { StyledReactAppleTree } from './ReactAppleTree.styles';
+import { ReactAppleTreeProps } from './types';
 
 export default function ReactAppleTreeWithoutDndContext<T>(
-  props: React.PropsWithChildren<ReactAppleTreeProps<T>>
+  props: React.PropsWithChildren<ReactAppleTreeProps<T>>,
 ) {
   return (
     <PropDataContextProvider>

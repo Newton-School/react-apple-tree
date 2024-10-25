@@ -1,6 +1,6 @@
 // Common
-export const DEFAULT_CLASSNAME = "react-apple-tree";
-export const LIBRARY_SLUG = "REACT_APPLE_TREE";
+export const DEFAULT_CLASSNAME = 'react-apple-tree';
+export const LIBRARY_SLUG = 'REACT_APPLE_TREE';
 
 // Theme
 export const DEFAULT_ROW_HEIGHT = 62;

@@ -1,13 +1,12 @@
-import React from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { ReactAppleTreeProps } from "./types";
-
-import ReactAppleTreeWithoutDndContext from "./ReactAppleTreeWithoutDndContext";
+import ReactAppleTreeWithoutDndContext from './ReactAppleTreeWithoutDndContext';
+import { ReactAppleTreeProps } from './types';
 
 export default function ReactAppleTree<T>(
-  props: React.PropsWithChildren<ReactAppleTreeProps<T>>
+  props: React.PropsWithChildren<ReactAppleTreeProps<T>>,
 ) {
   return (
     <DndProvider backend={HTML5Backend}>
