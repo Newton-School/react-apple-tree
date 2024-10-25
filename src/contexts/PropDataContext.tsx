@@ -60,17 +60,17 @@ function PropDataContextProvider(
       value={{
         appleTreeProps,
         setAppleTreeProps: (props: ReactAppleTreeProps) => {
-          const mergedTheme: ThemeProps = mergeThemeProps({
-            ...appleTreeProps,
-            ...props,
-          });
-          setAppleTreeProps(
-            cloneDeep({
-              ...appleTreeProps,
+          setAppleTreeProps((prevAppleTreeProps) => {
+            const mergedTheme: ThemeProps = mergeThemeProps({
+              ...prevAppleTreeProps,
+              ...props,
+            });
+            return cloneDeep({
+              ...prevAppleTreeProps,
               ...props,
               ...mergedTheme,
-            }),
-          );
+            });
+          });
         },
       }}
     >
