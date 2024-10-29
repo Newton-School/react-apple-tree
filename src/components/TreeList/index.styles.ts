@@ -2,6 +2,6 @@ import styled from 'styled-components';
 
 export const StyledNormalList = styled.div`
   position: relative;
-  height: 500px;
+  height: 100%;
   overflow: auto;
 `;

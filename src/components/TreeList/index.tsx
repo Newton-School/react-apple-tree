@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
 
 import { DEFAULT_ROW_HEIGHT } from '../../constants';
@@ -14,12 +14,22 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   const { appleTreeProps, setAppleTreeProps } = useContext(PropDataContext);
   const { flatTree } = useContext(TreeDataContext);
   const { searchedNodeIndex } = useContext(SearchContext);
+
+  const [virtualListHeight, setVirtualListHeight] = useState(0);
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const virtualListRef = useRef<List>(null);
   const normalListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setAppleTreeProps(props);
   }, [props]);
+
+  useEffect(() => {
+    if (wrapperRef.current) {
+      setVirtualListHeight(wrapperRef.current.clientHeight);
+    }
+  }, [wrapperRef]);
 
   const scrollVirtualList = (index: number) => {
     if (virtualListRef.current) {
@@ -44,19 +54,21 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   }, [searchedNodeIndex]);
 
   return appleTreeProps.isVirtualized ? (
-    <List
-      ref={virtualListRef}
-      height={500}
-      width="100%"
-      itemSize={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
-      itemCount={flatTree.length}
-      itemData={flatTree}
-      itemKey={(index, data) => data[index].mapId}
-      data-testid="virtualized-list"
-      {...appleTreeProps.reactVirtualizedListProps}
-    >
-      {ItemRenderer}
-    </List>
+    <div ref={wrapperRef} style={{ width: '100%', height: '100%' }}>
+      <List
+        ref={virtualListRef}
+        height={virtualListHeight}
+        width="100%"
+        itemSize={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
+        itemCount={flatTree.length}
+        itemData={flatTree}
+        itemKey={(index, data) => data[index].mapId}
+        data-testid="virtualized-list"
+        {...appleTreeProps.reactVirtualizedListProps}
+      >
+        {ItemRenderer}
+      </List>
+    </div>
   ) : (
     <StyledNormalList ref={normalListRef} data-testid="non-virtualized-list">
       {flatTree.map((node, i) => (
