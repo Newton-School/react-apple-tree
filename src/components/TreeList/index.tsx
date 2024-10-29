@@ -57,7 +57,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
     <div ref={wrapperRef} style={{ width: '100%', height: '100%' }}>
       <List
         ref={virtualListRef}
-        height={virtualListHeight}
+        height={virtualListHeight || 500}
         width="100%"
         itemSize={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
         itemCount={flatTree.length}
