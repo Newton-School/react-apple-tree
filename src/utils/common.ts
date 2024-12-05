@@ -1,25 +1,4 @@
 /**
- * Generates a unique ID.
- *
- * @param length - The length of the generated ID. Default is 16.
- * @returns A string representing the generated unique ID.
- */
-export function generateUniqueId(length = 16): string {
-  const characters =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let id = '';
-
-  const timestamp = Date.now().toString(36);
-
-  for (let i = 0; i < length; i += 1) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    id += characters[randomIndex];
-  }
-
-  return timestamp + id;
-}
-
-/**
  * Retrieves the text content of a React element.
  *
  * @param parent - The parent React element.
