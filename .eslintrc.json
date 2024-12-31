@@ -1,10 +1,20 @@
 {
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["@typescript-eslint", "simple-import-sort"],
+  "extends": [
+    "airbnb",
+    "prettier",
+    "plugin:storybook/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "simple-import-sort"
+  ],
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx"]
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
       },
       "typescript": {
         "alwaysTryTypes": true,
@@ -25,13 +35,28 @@
         "SwitchCase": 1
       }
     ],
-    "curly": ["error", "all"],
-    "react/jsx-indent": ["error", 2],
-    "react/jsx-indent-props": ["error", 2],
+    "curly": [
+      "error",
+      "all"
+    ],
+    "react/jsx-indent": [
+      "error",
+      2
+    ],
+    "react/jsx-indent-props": [
+      "error",
+      2
+    ],
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
-    "quotes": ["warn", "single"],
-    "semi": ["error", "always"],
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
     "no-console": "error",
     "no-compare-neg-zero": "off",
     "no-underscore-dangle": "off",
@@ -58,7 +83,12 @@
     "react/jsx-filename-extension": [
       2,
       {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     ],
     "react/forbid-prop-types": "off",
