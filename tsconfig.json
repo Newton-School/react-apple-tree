@@ -13,6 +13,13 @@
     "declaration": true,
     "outDir": "./dist"
   },
-  "include": ["src", "stories"],
-  "exclude": ["node_modules", "dist", "**/*.test.tsx", "**/*.test.ts"]
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".storybook",
+    "stories",
+    "**/*.test.tsx",
+    "**/*.test.ts"
+  ]
 }
