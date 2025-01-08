@@ -1,5 +1,6 @@
-import ReactAppleTree from '../src';
 import type { Meta, StoryObj } from '@storybook/react';
+
+import ReactAppleTree from '../src';
 import { defaultAppleTreeProps } from '../src/utils/default-props';
 import { defaultTreeData } from './default-treedata';
 
@@ -13,7 +14,6 @@ export default meta;
 type Story = StoryObj<typeof ReactAppleTree>;
 
 export const Default: Story = {
-  name: 'Default',
   args: {
     ...(defaultAppleTreeProps as any),
     treeData: defaultTreeData,

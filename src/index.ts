@@ -1,6 +1,6 @@
 import ReactAppleTree from './ReactAppleTree';
-import { ReactAppleTreeProps } from './types';
 import ReactAppleTreeWithoutDndContext from './ReactAppleTreeWithoutDndContext';
+import { ReactAppleTreeProps } from './types';
 
 export default ReactAppleTree;
 export { type ReactAppleTreeProps };
