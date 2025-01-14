@@ -4,11 +4,11 @@
 
 ## Table of Contents
 
-- [Getting Started](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
-- [Usage](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
-- [Props](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
-- [Data Helpers](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
-- [Themes](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Props](#props)
+- [Data Helpers](#data-helpers)
+- [Themes](#themes)
 
 ## Getting started
 
