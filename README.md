@@ -1,47 +1,128 @@
 # React Apple Tree
 
-React Apple Tree is an updated version of the popular library `react-sortable-tree`.
+> A React component for Drag-and-drop sortable representation of hierarchical data. Checkout the [Storybook](https://react-apple-tree.newtonschool.co/) for a demonstration of some basic and advanced features.
 
-## Installation
+## Table of Contents
 
-To install React Apple Tree, you can use npm or yarn:
+- [Getting Started](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
+- [Usage](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
+- [Props](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
+- [Data Helpers](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
+- [Themes](https://www.notion.so/readme-834be96d3f854f4093e39665014c5397?pvs=21)
+
+## Getting started
+
+Install `react-apple-tree` using npm.
 
 ```bash
-npm i @newtonschool/react-apple-tree
-# or
+# NPM
+npm install @newtonschool/react-apple-tree
+
+# YARN
 yarn add @newtonschool/react-apple-tree
+
 ```
 
-## Local Testing
+ES6 and CommonJS builds are available with each distribution.
+For example:
 
-To test React Apple Tree locally, follow these steps:
+```jsx
+// You can import the default tree with dnd context
+import ReactAppleTree from '@newtonschool/react-apple-tree';
 
-1. Clone the repository by running the following command in your terminal:
+// Or you can import the tree without the dnd context as a named export. eg
+import { ReactAppleTreeWithoutDndContext as ReactAppleTree } from '@newtonschool/react-apple-tree';
+```
 
-   ```bash
-   git clone https://github.com/Newton-School/react-apple-tree.git
-   ```
+## Usage
 
-2. Navigate to the project directory:
+```jsx
+import React, { useState } from 'react';
+import ReactAppleTree from '@newtonschool/react-apple-tree';
 
-   ```bash
-   cd react-apple-tree
-   ```
+const Tree = () => {
+  const [treeData, setTreeData] = useState([
+    { title: 'Chicken', children: [{ title: 'Egg' }] },
+    { title: 'Fish', children: [{ title: 'fingerline' }] },
+  ]);
 
-3. Install the project dependencies using npm:
+  return (
+    <div style={{ height: 400 }}>
+      <ReactAppleTree
+        treeData={treeData}
+        onChange={(newTreeData) => setTreeData(newTreeData)}
+      />
+    </div>
+  );
+};
 
-   ```bash
-   npm install
-   ```
+export default Tree;
+```
 
-4. Start the development server to watch for changes:
+## Props
 
-   ```bash
-   npm run watch
-   ```
+| Prop Name                 | Required | Type           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------------- | -------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| treeData                  | True     | object[]       | Tree data with the following keys: <div>`title` is the primary label for the node.</div> <div>`subtitle` is a secondary label for the node.</div><div>`expanded` shows children of the node if true, or hides them if false. Defaults to false.</div><div>`children` is an array of child nodes belonging to the node.</div><div>**Example**: `[{title: 'main', subtitle: 'sub'}, { title: 'value2', expanded: true, children: [{ title: 'value3') }] }]` </div>               |
+| onChange                  | True     | func           | Called whenever tree data changed. Just like with React input elements, you have to update your own component's data to see the changes reflected. <div>`( treeData: object[] ): void` </div>                                                                                                                                                                                                                                                                                  |
+| getNodeKey                | True     | func           | Specify the unique key used to identify each node and generate the `path` array passed in callbacks. With a setting of `getNodeKey={({ node }) => node.id}`, for example, in callbacks this will let you easily determine that the node with an `id` of `35` is (or has just become) a child of the node with an `id` of `12`, which is a child of ... and so on. <div>`({ node: object, treeIndex: number }): string or number` </div>                                        |
+| generateNodeProps         |          | func           | Generate an object with additional props to be passed to the node renderer. Use this for adding buttons via the `buttons` key, or additional `style` / `className` settings. <div>`({ node: object, path: number[] or string[], treeIndex: number, lowerSiblingCounts: number[], isSearchMatch: bool, isSearchFocus: bool }): object` </div>                                                                                                                                   |
+| onMoveNode                |          | func           | Called after node move operation. <div>`({ treeData: object[], node: object, nextParentNode: object, prevPath: number[] or string[], prevTreeIndex: number, nextPath: number[] or string[], nextTreeIndex: number }): void` </div>                                                                                                                                                                                                                                             |
+| onVisibilityToggle        |          | func           | Called after children nodes collapsed or expanded. <div>`({ treeData: object[], node: object, expanded: bool, path: number[] or string[] }): void` </div>                                                                                                                                                                                                                                                                                                                      |
+| onDragStateChanged        |          | func           | Called when a drag is initiated or ended. <div>`({ isDragging: bool, draggedNode: object }): void` </div>                                                                                                                                                                                                                                                                                                                                                                      |
+| maxDepth                  |          | number         | Maximum depth nodes can be inserted at. Defaults to infinite.                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| rowDirection              |          | string         | Adds row direction support if set to `'rtl'` Defaults to `'ltr'`. <div>`'rtl'                                                                                                                                                                                                                                                                                                                                                                                    'ltr'` </div> |
+| canDrag                   |          | func or bool   | Return false from callback to prevent node from dragging, by hiding the drag handle. Set prop to `false` to disable dragging on all nodes. Defaults to `true`. <div>`({ node: object, path: number[] or string[], treeIndex: number, lowerSiblingCounts: number[], isSearchMatch: bool, isSearchFocus: bool }): bool` </div>                                                                                                                                                   |
+| canDrop                   |          | func           | Return false to prevent node from dropping in the given location. <div>`({ node: object, prevPath: number[] or string[], prevParent: object, prevTreeIndex: number, nextPath: number[] or string[], nextParent: object, nextTreeIndex: number }): bool` </div>                                                                                                                                                                                                                 |
+| canNodeHaveChildren       |          | func           | Function to determine whether a node can have children, useful for preventing hover preview when you have a `canDrop` condition. Default is set to a function that returns `true`. Functions should be of type `(node): bool` or `bool` directly.                                                                                                                                                                                                                              |
+| theme                     | \*       | object         | Set an all-in-one packaged appearance for the tree.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| searchMethod              |          | func           | The method used to search nodes. Defaults to `defaultSearchMethod`, which uses the `searchQuery` string to search for nodes with matching `title` or `subtitle` values. NOTE: Changing `searchMethod` will not update the search, but changing the `searchQuery` will. <div>`({ node: object, path: number[] or string[], treeIndex: number, searchQuery: any }): bool` </div>                                                                                                 |
+| searchQuery               |          | string or any  | Used by the `searchMethod` to highlight and scroll to matched nodes. Should be a string for the default `searchMethod`, but can be anything when using a custom search. Defaults to `null`.                                                                                                                                                                                                                                                                                    |
+| searchFocusOffset         |          | number         | Outline the <`searchFocusOffset`>th node and scroll to it.                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| onlyExpandSearchedNodes   |          | boolean        | Only expand the nodes that match searches. Collapses all other nodes. Defaults to `false`.                                                                                                                                                                                                                                                                                                                                                                                     |
+| searchFinishCallback      |          | func           | Get the nodes that match the search criteria. Used for counting total matches, etc. <div>`(matches: { node: object, path: number[] or string[], treeIndex: number }[]): void` </div>                                                                                                                                                                                                                                                                                           |
+| dndType                   |          | string         | String value used by [react-dnd](https://react-dnd.github.io/react-dnd/about) (see overview at the link) for dropTargets and dragSources types. If not set explicitly, a default value is applied by react-apple-tree for you for its internal use. <div>**NOTE:** Must be explicitly set and the same value used in order for correct functioning of external nodes </div>                                                                                                    |
+| shouldCopyOnOutsideDrop   |          | func or bool   | Return true, or a callback returning true, and dropping nodes to react-dnd drop targets outside of the tree will not remove them from the tree. Defaults to `false`. <div>`({ node: object, prevPath: number[] or string[], prevTreeIndex: number, }): bool` </div>                                                                                                                                                                                                            |
+| reactVirtualizedListProps |          | object         | Custom properties to hand to the internal [react-virtualized List](https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md#prop-types)                                                                                                                                                                                                                                                                                                                           |
+| style                     |          | object         | Style applied to the container wrapping the tree (style defaults to `{height: '100%'}`)                                                                                                                                                                                                                                                                                                                                                                                        |
+| innerStyle                |          | object         | Style applied to the inner, scrollable container (for padding, etc.)                                                                                                                                                                                                                                                                                                                                                                                                           |
+| className                 |          | string         | Class name for the container wrapping the tree                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| rowHeight                 |          | number or func | Used by react-sortable-tree. Defaults to `62`. Either a fixed row height (number) or a function that returns the height of a row given its index: <div>`({ treeIndex: number, node: object, path: number[] or string[] }): number` </div>                                                                                                                                                                                                                                      |
+| slideRegionSize           |          | number         | Size in px of the region near the edges that initiates scrolling on dragover. Defaults to `100`.                                                                                                                                                                                                                                                                                                                                                                               |
+| scaffoldBlockPxWidth      |          | number         | The width of the blocks containing the lines representing the structure of the tree. Defaults to `44`.                                                                                                                                                                                                                                                                                                                                                                         |
+| isVirtualized             |          | bool           | Set to false to disable virtualization. Defaults to `true`.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| nodeContentRenderer       | \*       | any            | Override the default component for rendering nodes (but keep the scaffolding generator). This is a last resort for customization - most custom styling should be able to be solved with `generateNodeProps`, a `theme` or CSS rules.                                                                                                                                                                                                                                           |
+| placeholderRenderer       | \*       | any            | Override the default placeholder component which is displayed when the tree is empty. This is an advanced option, and in most cases should probably be solved with a `theme` or custom CSS instead.                                                                                                                                                                                                                                                                            |
 
-5. Use the default component or exported utility functions anywhere you want.
+> \* - Not implemented in this version
 
-   ```jsx
-   <ReactAppleTree treeData={[]} getNodeKey={() => {}} onChange={() => {}} />
-   ```
+## Data Helper Functions
+
+<div>Need a hand turning your flat data into nested tree data?</div>
+<div>Want to perform add/remove operations on the tree data without creating your own recursive function?</div>
+<div>Check out the helper functions exported from the library:</div>
+<br>
+
+- **`getTreeFromFlatData`**: Convert flat data (like that from a database) into nested tree data.
+- **`getFlatDataFromTree`**: Convert tree data back to flat data.
+- **`addNodeUnderParent`**: Add a node under the parent node at the given path.
+- **`removeNode`**: For a given path, get the node at that path, treeIndex, and the treeData with that node removed.
+- **`removeNodeAtPath`**: For a given path, remove the node and return the treeData.
+- **`changeNodeAtPath`**: Modify the node object at the given path.
+- **`map`**: Perform a change on every node in the tree.
+- **`walk`**: Visit every node in the tree in order.
+- **`getDescendantCount`**: Count how many descendants this node has.
+- **`getVisibleNodeCount`**: Count how many visible descendants this node has.
+- **`getVisibleNodeInfoAtIndex`**: Get the <`targetIndex`>th visible node in the tree data.
+- **`toggleExpandedForAll`**: Expand or close every node in the tree.
+- **`getNodeAtPath`**: Get the node at the input path.
+- **`insertNode`**: Insert the input node at the specified depth and minimumTreeIndex.
+- **`find`**: Find nodes matching a search query in the tree.
+- **`isDescendant`**: Check if a node is a descendant of another node.
+- **`getDepth`**: Get the longest path in the tree.
+
+## Themes
+
+Using the `theme` prop along with an imported theme module, you can easily override the default appearance with another standard one.
+
+> Not implemented in this version
