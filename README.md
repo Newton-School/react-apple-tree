@@ -7,7 +7,7 @@
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Props](#props)
-- [Data Helpers](#data-helpers)
+- [Data Helpers](#data-helper-functions)
 - [Themes](#themes)
 
 ## Getting started
