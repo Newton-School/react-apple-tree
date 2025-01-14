@@ -1,0 +1,23 @@
+# This workflow will push the latest code to a different branch when a release is created
+
+name: Create Release Branch
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Create and push branch
+        env:
+          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$RELEASE_VERSION"
+          git push -u origin "$RELEASE_VERSION" --force
