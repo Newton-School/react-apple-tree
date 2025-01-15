@@ -2,6 +2,8 @@
 
 > A React component for Drag-and-drop sortable representation of hierarchical data. Checkout the [Storybook](https://react-apple-tree.newtonschool.co/) for a demonstration of some basic and advanced features.
 
+<video src="https://d3dyfaf3iutrxo.cloudfront.net/general/upload/b03b892400614b9783fb7cfccd563394.mov" autoplay loop muted></video>
+
 ## Table of Contents
 
 - [Getting Started](#getting-started)
