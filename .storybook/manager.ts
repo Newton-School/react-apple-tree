@@ -1,4 +1,3 @@
-// .storybook/manager.ts
 import { addons } from '@storybook/addons';
 import { themes } from '@storybook/theming';
 import packageJson from '../package.json';
