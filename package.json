@@ -40,8 +40,7 @@
     "prettify": "prettier --write",
     "storybook": "storybook dev -p 6006",
     "add-cname": "echo 'react-apple-tree.newtonschool.co' > docs/CNAME",
-    "prepare:storybook": "echo \"LIBRARY_VERSION=$(node -p 'require(\"./package.json\").version')\" > .env",
-    "build-storybook": "npm run prepare:storybook && storybook build -o docs/main",
+    "build-storybook": "storybook build -o docs/main",
     "build-version-docs": "./scripts/build-version-docs.sh"
   },
   "pre-commit": "lint:staged",
