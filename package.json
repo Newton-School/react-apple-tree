@@ -39,7 +39,8 @@
     "lint:staged": "lint-staged",
     "prettify": "prettier --write",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build -o docs && echo 'react-apple-tree.newtonschool.co' > docs/CNAME"
+    "build-storybook": "storybook build -o docs && echo 'react-apple-tree.newtonschool.co' > docs/CNAME",
+    "build-version-docs": "./scripts/build-version-docs.sh"
   },
   "pre-commit": "lint:staged",
   "lint-staged": {
