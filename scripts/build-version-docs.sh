@@ -11,6 +11,13 @@ if [ -z "$1" ]; then
 fi
 
 VERSION=$1
+
+# Check if version name is "main"
+if [ "$VERSION" == "main" ]; then
+    echo "Error: Version name cannot be 'main'."
+    exit 1
+fi
+
 DOCS_DIR="docs/$VERSION"
 
 # Create the directory if it doesn't exist
