@@ -31,7 +31,7 @@ jobs:
         run: npm run build-storybook
       - name: Commit and push changes
         run: |
-          git checkout gh-pages
           git add docs/main -f
+          git checkout gh-pages
           git commit --allow-empty -m "[BOT] Build Storybook"
           git push origin gh-pages
