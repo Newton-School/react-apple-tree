@@ -1,10 +1,11 @@
 import { addons } from '@storybook/addons';
 import { themes } from '@storybook/theming';
-import packageJson from '../package.json';
+
+const version = process.env.LIBRARY_VERSION || 'Unknown Version';
 
 addons.setConfig({
   theme: {
     ...themes.light,
-    brandTitle: `React Apple Tree (v${packageJson.version})`,
+    brandTitle: `React Apple Tree (v${version})`,
   },
 });
