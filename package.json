@@ -1,6 +1,6 @@
 {
   "name": "@newtonschool/react-apple-tree",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "React Apple Tree is an updated version of the popular library react-sortable-tree.",
   "keywords": [
     "React Apple Tree",
@@ -40,7 +40,8 @@
     "prettify": "prettier --write",
     "storybook": "storybook dev -p 6006",
     "add-cname": "echo 'react-apple-tree.newtonschool.co' > docs/CNAME",
-    "build-storybook": "storybook build -o docs/main",
+    "prepare:storybook": "echo \"LIBRARY_VERSION=$(node -p 'require(\"./package.json\").version')\" > .env",
+    "build-storybook": "npm run prepare:storybook && storybook build -o docs/main",
     "build-version-docs": "./scripts/build-version-docs.sh"
   },
   "pre-commit": "lint:staged",
@@ -80,6 +81,7 @@
     "@storybook/addon-interactions": "^8.4.7",
     "@storybook/addon-onboarding": "^8.4.7",
     "@storybook/addon-webpack5-compiler-swc": "^2.0.0",
+    "@storybook/addons": "^7.6.17",
     "@storybook/blocks": "^8.4.7",
     "@storybook/react": "^8.4.7",
     "@storybook/react-webpack5": "^8.4.7",

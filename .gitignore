@@ -9,6 +9,9 @@ node_modules
 # Test
 coverage
 
+# Environment
+.env
+
 # Documentation
 *storybook.log
 docs/*
