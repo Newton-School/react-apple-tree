@@ -23,8 +23,8 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
       - name: Setup gh-pages branch
         run: |
+          git fetch origin
           git checkout master
-          git pull origin master
           git checkout gh-pages
           git merge master --allow-unrelated-histories --no-edit
       - name: Install dependencies
