@@ -101,7 +101,7 @@ export default Tree;
 <div>Need a hand turning your flat data into nested tree data?</div>
 <div>Want to perform add/remove operations on the tree data without creating your own recursive function?</div>
 <div>Check out the helper functions exported from the library:</div>
-<br>
+<br />
 
 - **`getTreeFromFlatData`**: Convert flat data (like that from a database) into nested tree data.
 - **`getFlatDataFromTree`**: Convert tree data back to flat data.
