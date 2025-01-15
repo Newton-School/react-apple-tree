@@ -41,7 +41,8 @@
     "storybook": "storybook dev -p 6006",
     "add-cname": "echo 'react-apple-tree.newtonschool.co' > docs/CNAME",
     "build-storybook": "storybook build -o docs/main",
-    "build-version-docs": "./scripts/build-version-docs.sh"
+    "build-version-docs": "./scripts/build-version-docs.sh",
+    "update-version": "./scripts/update-version.sh"
   },
   "pre-commit": "lint:staged",
   "lint-staged": {

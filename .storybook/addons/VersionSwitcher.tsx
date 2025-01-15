@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGlobals, useStorybookApi } from '@storybook/manager-api';
+import versions from '../../versions.json';
 
 interface Version {
   id: string;
@@ -7,7 +8,10 @@ interface Version {
   url?: string;
 }
 
-const VERSIONS: Version[] = [{ id: 'current', title: 'Select Version' }];
+const VERSIONS: Version[] = [
+  { id: 'current', title: 'Select Version' },
+  ...versions,
+];
 
 export default function VersionSwitcher() {
   const [globals, updateGlobals] = useGlobals();
