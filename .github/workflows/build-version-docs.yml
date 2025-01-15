@@ -35,6 +35,6 @@ jobs:
         run: npm run build-version-docs ${GITHUB_REF#refs/heads/release-}
       - name: Commit and push changes
         run: |
-          git add docs/main -f
+          git add docs/${GITHUB_REF#refs/heads/release-} -f
           git commit --allow-empty -m "[BOT] Build Storybook"
           git push origin gh-pages
