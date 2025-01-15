@@ -29,9 +29,16 @@ jobs:
         run: npm ci
       - name: Build storybook docs
         run: npm run build-storybook
+      - name: Copy docs to temporary location
+        run: cp -r docs/main /tmp/docs
+      - name: Checkout gh-pages branch
+        run: git checkout gh-pages
+      - name: Copy docs back to the repository
+        run: |
+          rm -rf docs/main
+          cp -r /tmp/docs docs/main
       - name: Commit and push changes
         run: |
           git add docs/main -f
-          git checkout gh-pages
           git commit --allow-empty -m "[BOT] Build Storybook"
           git push origin gh-pages
