@@ -24,6 +24,7 @@ export type TreeMap = Record<NodeKey, TreeItem>;
 export type SearchedNodeMap = Record<NodeKey, boolean>;
 
 export type TreeItem<T = {}> = T & {
+  id?: NodeKey;
   title?: React.ReactNode | undefined;
   subtitle?: React.ReactNode | undefined;
   expanded?: boolean | undefined;
