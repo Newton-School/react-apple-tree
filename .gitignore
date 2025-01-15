@@ -11,4 +11,6 @@ coverage
 
 # Documentation
 *storybook.log
-docs
+docs/*
+!docs/CNAME
+!docs/index.html
