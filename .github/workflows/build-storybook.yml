@@ -27,8 +27,6 @@ jobs:
         run: |
           git fetch origin
           git checkout master
-          git pull origin master
-          git pull origin gh-pages
           git checkout gh-pages
           git merge master --allow-unrelated-histories --no-edit
       - name: Install dependencies
