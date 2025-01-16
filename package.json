@@ -27,8 +27,7 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist && rm -rf .parcel-cache",
-    "build": "npm run build:clean && npm run extract-typings && parcel build",
-    "extract-typings": "tsc --project tsconfig.types.json",
+    "build": "npm run build:clean && parcel build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
