@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: recursive
       - name: Create and push branch
         env:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}
