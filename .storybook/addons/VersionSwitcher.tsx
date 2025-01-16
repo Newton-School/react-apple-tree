@@ -1,5 +1,5 @@
-import React from 'react';
-import { useGlobals, useStorybookApi } from '@storybook/manager-api';
+import React, { useEffect } from 'react';
+import { useGlobals } from '@storybook/manager-api';
 import versions from '../../versions.json';
 
 interface Version {
@@ -9,13 +9,21 @@ interface Version {
 }
 
 const VERSIONS: Version[] = [
-  { id: 'current', title: 'Select Version' },
-  ...versions,
+  { id: 'latest', title: 'Latest Version' },
+  ...versions.reverse(),
 ];
 
 export default function VersionSwitcher() {
   const [globals, updateGlobals] = useGlobals();
-  const api = useStorybookApi();
+
+  useEffect(() => {
+    const pathSegments = window.location.pathname.split('/');
+    const currentVersion = pathSegments[1];
+
+    if (VERSIONS.some((version) => version.id === currentVersion)) {
+      updateGlobals({ version: currentVersion });
+    }
+  }, []);
 
   const handleVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVersion = VERSIONS.find((v) => v.id === event.target.value);
@@ -23,6 +31,7 @@ export default function VersionSwitcher() {
     if (selectedVersion?.url) {
       window.location.href = `${window.location.origin}${selectedVersion.url}`;
     } else {
+      window.location.href = `${window.location.origin}`;
       updateGlobals({ version: selectedVersion?.id });
     }
   };
@@ -30,7 +39,7 @@ export default function VersionSwitcher() {
   return (
     <div className="version-switcher">
       <select
-        value={globals.version || 'current'}
+        value={globals.version || 'latest'}
         onChange={handleVersionChange}
         style={{
           margin: '0 15px',

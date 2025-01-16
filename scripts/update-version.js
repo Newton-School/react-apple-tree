@@ -58,7 +58,7 @@ console.log(`Updated version to ${newVersion}`);
 // Run npm install
 execSync('npm install', { stdio: 'inherit' });
 
-if (!isPre) {
+if (!isPre && (isMajor || isMinor)) {
   // Read the versions.json file
   const versionsJson = JSON.parse(fs.readFileSync(VERSIONS_JSON, 'utf8'));
 
@@ -75,6 +75,11 @@ if (!isPre) {
       url: `/${newVersion}`,
     };
     versionsJson.push(newVersionEntry);
+
+    // Ensure only the latest 10 versions are kept
+    if (versionsJson.length > 10) {
+      versionsJson.shift();
+    }
 
     // Write the updated versions.json file
     fs.writeFileSync(
