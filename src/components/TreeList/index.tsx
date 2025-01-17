@@ -53,24 +53,32 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
     }
   }, [searchedNodeIndex]);
 
-  return appleTreeProps.isVirtualized ? (
-    <div ref={wrapperRef} style={{ width: '100%', height: '100%' }}>
-      <List
-        ref={virtualListRef}
-        height={virtualListHeight || 500}
-        width="100%"
-        itemSize={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
-        itemCount={flatTree.length}
-        itemData={flatTree}
-        itemKey={(index, data) => data[index].mapId}
-        data-testid="virtualized-list"
-        {...appleTreeProps.reactVirtualizedListProps}
-      >
-        {ItemRenderer}
-      </List>
-    </div>
-  ) : (
-    <StyledNormalList ref={normalListRef} data-testid="non-virtualized-list">
+  if (appleTreeProps.isVirtualized) {
+    return (
+      <div ref={wrapperRef} style={{ width: '100%', height: '100%' }}>
+        <List
+          ref={virtualListRef}
+          height={virtualListHeight || 500}
+          width="100%"
+          itemSize={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
+          itemCount={flatTree.length}
+          itemData={flatTree}
+          itemKey={(index, data) => data[index].mapId}
+          data-testid="virtualized-list"
+          {...appleTreeProps.reactVirtualizedListProps}
+        >
+          {ItemRenderer}
+        </List>
+      </div>
+    );
+  }
+
+  return (
+    <StyledNormalList
+      ref={normalListRef}
+      className="virtualized-list"
+      data-testid="non-virtualized-list"
+    >
       {flatTree.map((node, i) => (
         <TreeItem
           key={node.mapId}
