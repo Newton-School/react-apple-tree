@@ -25,6 +25,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Check args
+        run: |
+          if [[ "${{ github.event.inputs.args }}" != "patch" && "${{ github.event.inputs.args }}" != "minor" && "${{ github.event.inputs.args }}" != "major" && "${{ github.event.inputs.args }}" != "pre patch" && "${{ github.event.inputs.args }}" != "pre minor" && "${{ github.event.inputs.args }}" != "pre major" ]]; then
+            echo "Invalid args: ${{ github.event.inputs.args }}"
+            exit 1
+          fi
       - name: Setup git
         run: |
           git config --global user.name 'github-actions[bot]'
