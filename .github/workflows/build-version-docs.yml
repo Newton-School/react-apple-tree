@@ -27,9 +27,16 @@ jobs:
         run: npm ci
       - name: Build storybook docs
         run: npm run build-version-docs ${{ github.event.release.tag_name }}
+      - name: Copy docs to temporary location
+        run: cp -r docs/${{ github.event.release.tag_name }} /tmp/rat_docs
+      - name: Checkout gh-pages branch
+        run: git checkout gh-pages
+      - name: Copy docs back to the repository
+        run: |
+          rm -rf docs/${{ github.event.release.tag_name }}
+          cp -r /tmp/rat_docs docs/${{ github.event.release.tag_name }}
       - name: Commit and push changes
         run: |
-          git checkout gh-pages
           git add docs/${{ github.event.release.tag_name }} -f
           git commit --allow-empty -m "[BOT] Build Storybook ${{ github.event.release.tag_name }}"
           git push origin gh-pages
