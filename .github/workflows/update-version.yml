@@ -1,0 +1,43 @@
+# This workflow will run a script to update the version in package.json and versions.json files
+
+name: Update Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      args:
+        description: 'Command line arguments for the script'
+        required: true
+        default: 'patch'
+        options:
+          - 'patch'
+          - 'minor'
+          - 'major'
+          - 'pre patch'
+          - 'pre minor'
+          - 'pre major'
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Setup git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+      - name: Fetch master branch
+        run: |
+          git fetch origin
+          git checkout master
+      - name: Update version
+        run: npm run update-version ${{ github.event.inputs.args }}
+      - name: Commit and push changes
+        run: |
+          git add package.json package-lock.json versions.json
+          git commit -m "Update version"
+          git push origin master
