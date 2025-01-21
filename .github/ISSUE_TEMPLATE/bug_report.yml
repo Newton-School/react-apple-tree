@@ -11,7 +11,7 @@ body:
         Thanks for taking the time to fill out this bug report!
 
   - type: input
-    id:
+    id: link
     attributes:
       label: Link to the code that reproduces this issue
       description: |
