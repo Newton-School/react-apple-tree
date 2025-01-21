@@ -58,5 +58,5 @@ jobs:
       - name: Commit and push changes
         run: |
           git add package.json package-lock.json versions.json
-          git commit -m "Update version to `${{ steps.get_version.outputs.version }}`"
+          git commit -m "Update version to v`${{ steps.get_version.outputs.version }}`"
           git push origin "v${{ steps.get_version.outputs.version }}"
