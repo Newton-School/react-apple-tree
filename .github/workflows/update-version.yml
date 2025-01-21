@@ -1,4 +1,7 @@
-# This workflow will run a script to update the version in package.json and versions.json files
+# This workflow is triggered manually by the user and updates the version of the project.
+# The possible arguments are: patch, minor, major, pre patch, pre minor, pre major.
+# It creates a new branch with the new version and pushes it to the repository.
+# Repository owners need to merge the branch to master in order to update the version of the project.
 
 name: Update Version
 
