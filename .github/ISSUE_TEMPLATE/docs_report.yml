@@ -1,0 +1,74 @@
+name: Documentation Report
+description: Report issues related to storybook documentation
+title: '[DOCS] '
+labels: documentation
+assignees: ''
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to help improve our documentation!
+
+  - type: input
+    id: link
+    attributes:
+      label: Link of the documentation page
+      placeholder: 'https://react-apple-tree.newtonschool.com/'
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the issue or suggestion in detail
+      placeholder: Provide a detailed description of the documentation issue or suggestion
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: |
+        Steps to reproduce the behavior:
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+      placeholder: Steps to reproduce the issue
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Please specify the browser you are using with its version (e.g., Chrome, Safari).
+      placeholder: Browser
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Please specify the version of the library you are using (e.g., 1.1.0).
+      placeholder: Version
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_environment
+    attributes:
+      label: Additional Environment Information
+      description: Add any other relevant environment information here.
+      placeholder: Additional environment information
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: |
+        Add any other context about the problem here.
+        Add screenshots if applicable.
+      placeholder: Additional context
