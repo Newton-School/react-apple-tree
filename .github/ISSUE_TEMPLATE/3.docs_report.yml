@@ -2,7 +2,6 @@ name: Documentation Report
 description: Report issues related to storybook documentation
 title: '[DOCS] '
 labels: documentation
-assignees: ''
 
 body:
   - type: markdown
