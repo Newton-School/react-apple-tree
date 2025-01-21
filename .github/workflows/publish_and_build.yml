@@ -1,0 +1,81 @@
+name: Publish and Build
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-npm-package:
+    name: Publish NPM Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Package
+        run: npm run build
+      - name: Publish to NPM
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.PUBLISH_NEW_RELEASE_NPM_TOKEN }}
+
+  build-version-docs:
+    name: Build Version Docs
+    runs-on: ubuntu-latest
+    needs: publish-npm-package
+    if: ${{ !github.event.release.prerelease }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Setup git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+      - name: Fetch master branch
+        run: |
+          git fetch origin
+          git checkout master
+      - name: Install dependencies
+        run: npm ci
+      - name: Build storybook docs
+        run: npm run build-version-docs ${{ github.event.release.tag_name }}
+      - name: Copy docs to temporary location
+        run: cp -r docs/${{ github.event.release.tag_name }} /tmp/rat_docs
+      - name: Checkout gh-pages branch
+        run: git checkout gh-pages
+      - name: Copy docs back to the repository
+        run: |
+          rm -rf docs/${{ github.event.release.tag_name }}
+          cp -r /tmp/rat_docs docs/${{ github.event.release.tag_name }}
+      - name: Commit and push changes
+        run: |
+          git add docs/${{ github.event.release.tag_name }} -f
+          git commit --allow-empty -m "[BOT] Build Storybook ${{ github.event.release.tag_name }}"
+          git push origin gh-pages
+
+  create-release-branch:
+    name: Create Release Branch
+    runs-on: ubuntu-latest
+    needs: publish-npm-package
+    if: ${{ !github.event.release.prerelease }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Create and push branch
+        env:
+          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout -B "release-$RELEASE_VERSION"
+          git push -u origin "release-$RELEASE_VERSION" --force
