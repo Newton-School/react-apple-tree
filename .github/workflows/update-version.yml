@@ -60,11 +60,3 @@ jobs:
           git add package.json package-lock.json versions.json
           git commit -m "Update version to `${{ steps.get_version.outputs.version }}`"
           git push origin "v${{ steps.get_version.outputs.version }}"
-      - name: Create pull request
-        run: |
-          PR_TITLE="Update version to `${{ steps.get_version.outputs.version }}`"
-          PR_HEAD="v${{ steps.get_version.outputs.version }}"
-          PR_BASE="master"
-          gh pr create --title "$PR_TITLE" --head "$PR_HEAD" --base "$PR_BASE"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
