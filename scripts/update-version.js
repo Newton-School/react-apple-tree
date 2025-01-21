@@ -53,6 +53,7 @@ const newVersion = `${mainVersionParts.join('.')}${preVersion !== null ? `-${pre
 // Update package.json with the new version
 packageJson.version = newVersion;
 fs.writeFileSync(PACKAGE_JSON, JSON.stringify(packageJson, null, 2), 'utf8');
+execSync(`npx prettier --write ${PACKAGE_JSON}`, { stdio: 'inherit' });
 console.log(`Updated version to ${newVersion}`);
 
 // Run npm install
