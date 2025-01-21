@@ -8,7 +8,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to help improve our documentation!
+        Fill out the sections below to help us reproduce and fix the bug.
+        Fill in as much of the template below as you're able. The more you include, the easier it will be to reproduce and fix the bug.
 
   - type: input
     id: link

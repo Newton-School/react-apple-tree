@@ -8,7 +8,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Fill out the sections below to help us reproduce and fix the bug.
+        Please ensure you are using the latest version of the library before reporting a bug.
+        Fill in as much of the template below as you're able. The more you include, the easier it will be to reproduce and fix the bug.
 
   - type: input
     id: link
@@ -84,5 +86,7 @@ body:
     id: additional
     attributes:
       label: Additional context
-      description: Add any other context about the problem here.
+      description: |
+        Add any other context about the problem here.
+        Add screenshots if applicable.
       placeholder: Additional context
