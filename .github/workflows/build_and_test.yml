@@ -13,19 +13,19 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: Check base branch
-      if: contains(github.event.pull_request.base.ref, 'gh-pages') || contains(github.event.pull_request.base.ref, 'release')
-      run: exit 1
+        if: contains(github.event.pull_request.base.ref, 'gh-pages') || contains(github.event.pull_request.base.ref, 'release')
+        run: exit 1
       - name: Comment on PR
-      if: contains(github.event.pull_request.base.ref, 'gh-pages') || contains(github.event.pull_request.base.ref, 'release')
-      uses: actions/github-script@v6
-      with:
-        script: |
-        github.rest.issues.createComment({
-          issue_number: context.issue.number,
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          body: 'The base branch name must not contain "gh-pages" or "release".'
-        })
+        if: contains(github.event.pull_request.base.ref, 'gh-pages') || contains(github.event.pull_request.base.ref, 'release')
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'The base branch name must not contain "gh-pages" or "release".'
+            })
 
   run-tests:
     name: Run Tests
