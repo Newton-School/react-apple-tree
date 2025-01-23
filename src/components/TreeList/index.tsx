@@ -17,7 +17,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
 
   const [virtualListHeight, setVirtualListHeight] = useState(0);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const virtualListWrapperRef = useRef<HTMLDivElement>(null);
   const virtualListRef = useRef<List>(null);
   const normalListRef = useRef<HTMLDivElement>(null);
 
@@ -26,10 +26,10 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   }, [props]);
 
   useEffect(() => {
-    if (wrapperRef.current) {
-      setVirtualListHeight(wrapperRef.current.clientHeight);
+    if (virtualListWrapperRef.current) {
+      setVirtualListHeight(virtualListWrapperRef.current.clientHeight);
     }
-  }, [wrapperRef]);
+  }, [virtualListWrapperRef]);
 
   const scrollVirtualList = (index: number) => {
     if (virtualListRef.current) {
@@ -55,7 +55,10 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
 
   if (appleTreeProps.isVirtualized) {
     return (
-      <div ref={wrapperRef} style={{ width: '100%', height: '100%' }}>
+      <div
+        ref={virtualListWrapperRef}
+        style={{ width: '100%', height: '100%' }}
+      >
         <List
           ref={virtualListRef}
           height={virtualListHeight || 500}

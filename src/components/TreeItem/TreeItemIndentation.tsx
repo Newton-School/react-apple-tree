@@ -29,10 +29,6 @@ function TreeItemIndentation({ nodeIndex, node }: TreeItemIndentationProps) {
   const { dropzoneInformation } = useContext(DNDContext);
   const [depth, setDepth] = useState(calculateNodeDepth(node) - 1);
 
-  useEffect(() => {
-    setDepth(calculateNodeDepth(node) - 1);
-  }, [node]);
-
   const {
     actualDropLineDepth,
     startActualDropLine,
@@ -40,24 +36,23 @@ function TreeItemIndentation({ nodeIndex, node }: TreeItemIndentationProps) {
     endActualDropLine,
   } = getActualDropLineInformation(nodeIndex, dropzoneInformation);
 
+  useEffect(() => {
+    setDepth(calculateNodeDepth(node) - 1);
+  }, [node]);
+
   return (
     <StyledTreeItemIndentation>
       {depth > 0 &&
-        (actualDropLineDepth === 0 && endActualDropLine ? (
+        (actualDropLineDepth === 0 &&
+        (midActualDropLine || endActualDropLine) ? (
           <StlyedHighlightedLineBlock
             $scaffoldWidth={
               appleTreeProps.scaffoldBlockPxWidth ||
               DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
             }
-            $position="end"
-          />
-        ) : actualDropLineDepth === 0 && midActualDropLine ? (
-          <StlyedHighlightedLineBlock
-            $scaffoldWidth={
-              appleTreeProps.scaffoldBlockPxWidth ||
-              DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
+            $position={
+              midActualDropLine ? 'mid' : endActualDropLine ? 'end' : 'start'
             }
-            $position="mid"
           />
         ) : (
           <StyledEmptyBlock
