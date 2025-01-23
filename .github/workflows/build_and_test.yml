@@ -1,20 +1,51 @@
-# This workflow is triggered when a new commit is pushed to the master branch or a pull request is opened against the master branch.
-# It builds the Storybook documentation and pushes it to the gh-pages branch.
-# It also runs the test suite.
-
 name: Build and Test
 
 on:
-  push:
-    branches: [master]
   pull_request:
+    types: [opened, synchronize, reopened]
+  push:
     branches: [master]
 
 jobs:
+  check-base-branch:
+    name: Check Base Branch
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check base branch
+      if: contains(github.event.pull_request.base.ref, 'gh-pages') || contains(github.event.pull_request.base.ref, 'release')
+      run: exit 1
+      - name: Comment on PR
+      if: contains(github.event.pull_request.base.ref, 'gh-pages') || contains(github.event.pull_request.base.ref, 'release')
+      uses: actions/github-script@v6
+      with:
+        script: |
+        github.rest.issues.createComment({
+          issue_number: context.issue.number,
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          body: 'The base branch name must not contain "gh-pages" or "release".'
+        })
+
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: [check-base-branch]
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm run test
+
   build-storybook:
     name: Build Storybook
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -46,16 +77,3 @@ jobs:
           git add docs/main -f
           git commit --allow-empty -m "[BOT] Build Storybook"
           git push origin gh-pages
-
-  run-tests:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-      - name: Install dependencies
-        run: npm ci
-      - name: Run tests
-        run: npm run test
