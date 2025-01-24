@@ -32,7 +32,7 @@ interface DNDContextProps {
   draggingNodeInformation: DraggingNodeInformation | null;
   dropzoneInformation: DropZoneInformation | null;
   startDrag: (params: StartDragProps) => void;
-  hoverNode: (params: OnHoverNodeProps) => void;
+  onHoverNode: (params: OnHoverNodeProps) => void;
   completeDrop: (isDroppedOutsideTree?: boolean) => void;
   getDraggingNodeInformationFromNodeIndex: (
     nodeIndex: number,
@@ -45,7 +45,7 @@ const DNDContext = createContext<DNDContextProps>({
   draggingNodeInformation: null,
   dropzoneInformation: null,
   startDrag: () => {},
-  hoverNode: () => {},
+  onHoverNode: () => {},
   completeDrop: () => {},
   getDraggingNodeInformationFromNodeIndex: () => null,
 });
@@ -63,7 +63,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
     useState<DraggingNodeInformation | null>(null);
   const [dropzoneInformation, setDropzoneInformation] =
     useState<DropZoneInformation | null>(null);
-  const [hoverNodeParams, setHoverNodeParams] =
+  const [onHoverNodeParams, setOnHoverNodeParams] =
     useState<OnHoverNodeProps | null>(null);
 
   function getDraggingNodeInformationFromNodeIndex(
@@ -93,7 +93,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
   }
 
   // When dragging node is hovering over some node
-  function hoverNode(params: OnHoverNodeProps) {
+  function onHoverNode(params: OnHoverNodeProps) {
     if (
       draggingNodeInformation === null &&
       params.draggingNodeInformation &&
@@ -106,16 +106,16 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
           params.draggingNodeInformation.treeNode,
       });
     }
-    setHoverNodeParams(params);
+    setOnHoverNodeParams(params);
   }
 
   useEffect(() => {
-    if (draggingNodeInformation && hoverNodeParams) {
-      const flatNode = flatTree[hoverNodeParams.nodeIndex];
+    if (draggingNodeInformation && onHoverNodeParams) {
+      const flatNode = flatTree[onHoverNodeParams.nodeIndex];
 
       // Calculate temp drop index
-      let tmpDropIndex = hoverNodeParams.nodeIndex;
-      if (hoverNodeParams.direction === NodeAppendDirection.Below) {
+      let tmpDropIndex = onHoverNodeParams.nodeIndex;
+      if (onHoverNodeParams.direction === NodeAppendDirection.Below) {
         tmpDropIndex += 1;
       }
       let hoverDropIndex = tmpDropIndex;
@@ -154,7 +154,8 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
       }
 
       // Calculate actual depth
-      let dropNodeDepth = calculateNodeDepth(flatNode) + hoverNodeParams.depth;
+      let dropNodeDepth =
+        calculateNodeDepth(flatNode) + onHoverNodeParams.depth;
       if (tmpDropIndex === 0) {
         dropNodeDepth = 0;
       } else {
@@ -229,7 +230,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
       // Get position of node in tree
       const [parentKey, siblingCount] = getParentKeyAndSiblingCountFromList(
         flatTree,
-        hoverNodeParams.nodeIndex,
+        onHoverNodeParams.nodeIndex,
       );
 
       // Checking can drop
@@ -302,7 +303,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
         moveNodeData,
       });
     }
-  }, [draggingNodeInformation, hoverNodeParams]);
+  }, [draggingNodeInformation, onHoverNodeParams]);
 
   // Node is dropped
   function completeDrop(isDroppedOutsideTree: boolean = false) {
@@ -344,7 +345,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
         draggingNodeInformation,
         dropzoneInformation,
         startDrag,
-        hoverNode,
+        onHoverNode,
         completeDrop,
         getDraggingNodeInformationFromNodeIndex,
       }}

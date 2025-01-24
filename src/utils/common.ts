@@ -44,7 +44,8 @@ export function removeItemAtGivenIndexFromArray<T>(
   if (index < 0 || index >= array.length) {
     return array;
   }
-  return [...array.slice(0, index), ...array.slice(index + 1)];
+  array.splice(index, 1);
+  return array;
 }
 
 /**

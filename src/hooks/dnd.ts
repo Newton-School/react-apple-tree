@@ -39,7 +39,7 @@ interface DropHookProps {
   listNode: FlatTreeItem;
   nodeElement: React.MutableRefObject<null>;
   dndType?: string;
-  hoverNode: (params: OnHoverNodeProps) => void;
+  onHoverNode: (params: OnHoverNodeProps) => void;
   completeDrop: () => void;
 }
 
@@ -103,7 +103,7 @@ export const useDragHook = ({
  * @param {FlatTreeItem} options.listNode - The list node.
  * @param {React.MutableRefObject<null>} options.nodeElement - The reference to the node element.
  * @param {string} options.dndType - The drag and drop type.
- * @param {Function} options.hoverNode - The function to call when hovering over a node.
+ * @param {Function} options.onHoverNode - The function to call when hovering over a node.
  * @param {Function} options.completeDrop - The function to call when the drop is complete.
  * @returns {UseDropHookReturnProps} - The object containing the drag and drop properties.
  * @property {boolean} isOver - Indicates whether the item is being hovered over.
@@ -114,7 +114,7 @@ export const useDropHook = ({
   listNode,
   nodeElement,
   dndType,
-  hoverNode,
+  onHoverNode,
   completeDrop,
 }: DropHookProps): UseDropHookReturnProps => {
   const [hoveredDepth, setHoveredDepth] = useState<number | null>(null);
@@ -154,7 +154,7 @@ export const useDropHook = ({
           if (hoveredDepth !== depth) {
             setHoveredDepth(depth);
             if (offsetY < targetHeight / 2) {
-              hoverNode({
+              onHoverNode({
                 depth,
                 direction: NodeAppendDirection.Below,
                 nodeIndex,
@@ -162,7 +162,7 @@ export const useDropHook = ({
                 draggingNodeInformation: item.draggingNodeInformation,
               });
             } else {
-              hoverNode({
+              onHoverNode({
                 depth,
                 direction: NodeAppendDirection.Above,
                 nodeIndex,

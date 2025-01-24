@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import { FixedSizeList as VirtualizedList } from 'react-window';
 
 import { DEFAULT_ROW_HEIGHT } from '../../constants';
 import { PropDataContext } from '../../contexts/PropDataContext';
@@ -18,7 +18,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   const [virtualListHeight, setVirtualListHeight] = useState(0);
 
   const virtualListWrapperRef = useRef<HTMLDivElement>(null);
-  const virtualListRef = useRef<List>(null);
+  const virtualListRef = useRef<VirtualizedList>(null);
   const normalListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
         ref={virtualListWrapperRef}
         style={{ width: '100%', height: '100%' }}
       >
-        <List
+        <VirtualizedList
           ref={virtualListRef}
           height={virtualListHeight || 500}
           width="100%"
@@ -71,7 +71,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
           {...appleTreeProps.reactVirtualizedListProps}
         >
           {ItemRenderer}
-        </List>
+        </VirtualizedList>
       </div>
     );
   }

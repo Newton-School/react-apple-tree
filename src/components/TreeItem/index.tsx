@@ -41,7 +41,7 @@ function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
     draggingNodeInformation,
     dropzoneInformation,
     startDrag,
-    hoverNode,
+    onHoverNode,
     completeDrop,
   } = useContext(DNDContext);
   const { searchedNodeMap, searchedNodeIndex } = useContext(SearchContext);
@@ -74,7 +74,7 @@ function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
     listNode: node,
     nodeElement,
     dndType: appleTreeProps.dndType,
-    hoverNode,
+    onHoverNode,
     completeDrop,
   });
 
