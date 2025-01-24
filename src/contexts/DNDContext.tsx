@@ -2,24 +2,26 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { SHARED_IS_DRAGGING_NODE_STATE } from '../constants';
 import useSharedState from '../hooks/useSharedState';
+import { ContextProviderProps } from '../types';
 import {
-  ContextProviderProps,
-  FlatTreeItem,
-  NumberOrStringArray,
-} from '../types';
-import { removeItemAtGivenIndexFromArray } from '../utils/common';
+  calculateActualDropDepth,
+  calculateActualDropIndex,
+  calculateTempDropIndex,
+  constructDropzone,
+  constructMoveNodeData,
+  expandPreviousNodeToInsertInSubtree,
+  removeDragggingNodeIfExists,
+  removeDropzoneNodeIfExists,
+} from '../utils/hover-node';
 import {
   calculateNodeDepth,
   collapseNode,
-  expandNode,
   getParentKeyAndSiblingCountFromList,
   moveNodeToDifferentParent,
 } from '../utils/node-operations';
-import { runCanNodeHaveChildren } from '../utils/prop-utils';
 import {
   DraggingNodeInformation,
   DropZoneInformation,
-  NodeAppendDirection,
   OnHoverNodeProps,
   StartDragProps,
 } from './DNDContextTypes';
@@ -112,120 +114,56 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
   useEffect(() => {
     if (draggingNodeInformation && onHoverNodeParams) {
       const flatNode = flatTree[onHoverNodeParams.nodeIndex];
-
-      // Calculate temp drop index
-      let tmpDropIndex = onHoverNodeParams.nodeIndex;
-      if (onHoverNodeParams.direction === NodeAppendDirection.Below) {
-        tmpDropIndex += 1;
-      }
-      let hoverDropIndex = tmpDropIndex;
       let newFlatList = [...flatTree];
       let newTreeMap = { ...treeMap };
 
+      // Calculate temp drop index
+      let hoverDropIndex = calculateTempDropIndex(onHoverNodeParams);
+
       // Removing dragging node if exists
-      if (
-        !draggingNodeInformation.externalDrag &&
-        newFlatList[draggingNodeInformation.dragStartIndex].mapId ===
-          draggingNodeInformation.flatNode.mapId
-      ) {
-        newFlatList = removeItemAtGivenIndexFromArray(
-          newFlatList,
-          draggingNodeInformation.dragStartIndex,
-        );
-        if (hoverDropIndex > draggingNodeInformation.dragStartIndex) {
-          hoverDropIndex -= 1;
-        }
-      }
+      [hoverDropIndex, newFlatList] = removeDragggingNodeIfExists(
+        hoverDropIndex,
+        newFlatList,
+        draggingNodeInformation,
+      );
 
       // Removing dropzone node if exists
-      if (
-        dropzoneInformation &&
-        dropzoneInformation.dropIndex < newFlatList.length &&
-        newFlatList[dropzoneInformation.dropIndex].mapId ===
-          dropzoneInformation.flatNode.mapId
-      ) {
-        newFlatList = removeItemAtGivenIndexFromArray(
-          newFlatList,
-          dropzoneInformation.dropIndex,
-        );
-        if (hoverDropIndex > dropzoneInformation.dropIndex) {
-          hoverDropIndex -= 1;
-        }
-      }
+      [hoverDropIndex, newFlatList] = removeDropzoneNodeIfExists(
+        hoverDropIndex,
+        newFlatList,
+        dropzoneInformation,
+      );
 
       // Calculate actual depth
-      let dropNodeDepth =
+      const tmpDropDepth =
         calculateNodeDepth(flatNode) + onHoverNodeParams.depth;
-      if (tmpDropIndex === 0) {
-        dropNodeDepth = 0;
-      } else {
-        let start = tmpDropIndex - 1;
-        while (start >= 0) {
-          if (
-            flatTree[start].mapId === draggingNodeInformation.flatNode.mapId ||
-            flatTree[start].mapId === dropzoneInformation?.flatNode.mapId ||
-            calculateNodeDepth(flatTree[start]) > dropNodeDepth
-          ) {
-            start -= 1;
-          } else {
-            break;
-          }
-        }
-        tmpDropIndex = start + 1;
-      }
-      if (tmpDropIndex <= 0) {
-        tmpDropIndex = 0;
-        dropNodeDepth = 1;
-      } else {
-        const prevDepth = calculateNodeDepth(flatTree[tmpDropIndex - 1]);
-        if (dropNodeDepth <= prevDepth) {
-          dropNodeDepth = prevDepth;
-        } else if (
-          runCanNodeHaveChildren(
-            appleTreeProps.canNodeHaveChildren,
-            treeMap[flatTree[tmpDropIndex - 1].mapId],
-          )
-        ) {
-          dropNodeDepth = prevDepth + 1;
-        } else {
-          dropNodeDepth = prevDepth;
-        }
-      }
-
-      const hoverDropDepth = dropNodeDepth;
+      const hoverDropDepth = calculateActualDropDepth(
+        hoverDropIndex,
+        tmpDropDepth,
+        newTreeMap,
+        newFlatList,
+        draggingNodeInformation,
+        dropzoneInformation,
+        appleTreeProps.canNodeHaveChildren,
+      );
 
       // Expanding previous node
-      if (hoverDropIndex > 0) {
-        const prevNode = newFlatList[hoverDropIndex - 1];
-        const prevTreeNode = treeMap[prevNode.mapId];
-        if (calculateNodeDepth(prevNode) < hoverDropDepth) {
-          const [map, updatedFlatList] = expandNode(
-            prevNode.mapId,
-            prevTreeNode,
-            treeMap,
-            newFlatList,
-            appleTreeProps.getNodeKey,
-          );
-          newTreeMap = { ...map };
-          newFlatList = [...updatedFlatList];
-        }
-      }
+      [newTreeMap, newFlatList] = expandPreviousNodeToInsertInSubtree(
+        hoverDropIndex,
+        hoverDropDepth,
+        newTreeMap,
+        newFlatList,
+        appleTreeProps.getNodeKey,
+      );
 
       // Calculating actual drop location
-      let actualDropIndex = hoverDropIndex;
-      while (actualDropIndex < flatTree.length) {
-        if (
-          flatTree[actualDropIndex].mapId ===
-            draggingNodeInformation.flatNode.mapId ||
-          flatTree[actualDropIndex].mapId ===
-            dropzoneInformation?.flatNode.mapId ||
-          calculateNodeDepth(flatTree[actualDropIndex]) > dropNodeDepth
-        ) {
-          actualDropIndex += 1;
-        } else {
-          break;
-        }
-      }
+      const actualDropIndex = calculateActualDropIndex(
+        hoverDropIndex,
+        hoverDropDepth,
+        newFlatList,
+        draggingNodeInformation,
+        dropzoneInformation,
+      );
 
       // Get position of node in tree
       const [parentKey, siblingCount] = getParentKeyAndSiblingCountFromList(
@@ -233,60 +171,30 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
         onHoverNodeParams.nodeIndex,
       );
 
+      // Construct move node data
+      const moveNodeData = constructMoveNodeData(
+        newTreeMap,
+        newFlatList,
+        parentKey,
+        actualDropIndex,
+        draggingNodeInformation,
+      );
+
       // Checking can drop
       let canDrop = true;
-      let prevParent = null;
-      if (draggingNodeInformation.flatNode.path.at(-2)) {
-        prevParent =
-          treeMap[draggingNodeInformation.flatNode.path.at(-2) || ''];
-      }
-      let nextParent = null;
-      let nextParentPath: NumberOrStringArray = [];
-      if (parentKey) {
-        nextParent = treeMap[parentKey];
-        const nextParentIndex = newFlatList.findIndex(
-          (node) => node.mapId === parentKey,
-        );
-        if (nextParentIndex !== -1) {
-          nextParentPath = newFlatList[nextParentIndex].path;
-        }
-      }
-
-      const moveNodeData = {
-        node: draggingNodeInformation.treeNode,
-        path: [...nextParentPath, draggingNodeInformation.flatNode.mapId],
-        treeIndex: draggingNodeInformation.dragStartIndex,
-        nextParent,
-        nextPath: [...nextParentPath, draggingNodeInformation.flatNode.mapId],
-        nextTreeIndex: actualDropIndex - 1,
-        prevParent,
-        prevPath: draggingNodeInformation.flatNode.path,
-        prevTreeIndex: draggingNodeInformation.dragStartIndex,
-      };
       if (appleTreeProps.canDrop) {
         canDrop = appleTreeProps.canDrop(moveNodeData);
       }
 
       // Creating new dropzone node
-      const newFlatNode: FlatTreeItem = {
-        ...draggingNodeInformation.flatNode,
-        forcedDepth: hoverDropDepth,
-      };
-      if (
-        hoverDropIndex === draggingNodeInformation.dragStartIndex &&
-        hoverDropDepth === draggingNodeInformation.dragStartDepth
-      ) {
-        newFlatNode.draggingNode = true;
-      } else if (canDrop) {
-        newFlatNode.dropSuccessNode = true;
-      } else {
-        newFlatNode.dropErrorNode = true;
-      }
-      newFlatList = [
-        ...newFlatList.slice(0, hoverDropIndex),
-        { ...newFlatNode },
-        ...newFlatList.slice(hoverDropIndex),
-      ];
+      newFlatList = constructDropzone(
+        hoverDropIndex,
+        hoverDropDepth,
+        canDrop,
+        newFlatList,
+        draggingNodeInformation,
+      );
+      const newFlatNode = newFlatList[hoverDropIndex];
 
       // Updating UI
       setFlatTree([...newFlatList]);
