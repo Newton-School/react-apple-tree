@@ -153,7 +153,7 @@ export const useDropHook = ({
           }
           if (hoveredDepth !== depth) {
             setHoveredDepth(depth);
-            if (offsetY * 2 < targetHeight) {
+            if (offsetY < targetHeight / 2) {
               hoverNode({
                 depth,
                 direction: NodeAppendDirection.Below,

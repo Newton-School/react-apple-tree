@@ -48,7 +48,7 @@ export function removeItemAtGivenIndexFromArray<T>(
 }
 
 /**
- * Inserts an item into an array at the specified index.
+ * Inserts items into an array at the specified index.
  *
  * @template T - The type of the array elements.
  * @param {T[]} array - The array to insert the item into.

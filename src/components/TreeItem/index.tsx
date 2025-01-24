@@ -67,11 +67,13 @@ function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
   const { isDragging, dragRef, dragPreview } = useDragHook({
     nodeIndex,
     listNode: node,
+    dndType: appleTreeProps.dndType,
   });
   const { dropRef } = useDropHook({
     nodeIndex,
     listNode: node,
     nodeElement,
+    dndType: appleTreeProps.dndType,
     hoverNode,
     completeDrop,
   });

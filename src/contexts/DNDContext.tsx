@@ -33,7 +33,7 @@ interface DNDContextProps {
   dropzoneInformation: DropZoneInformation | null;
   startDrag: (params: StartDragProps) => void;
   hoverNode: (params: OnHoverNodeProps) => void;
-  completeDrop: (shouldRemoveDragDetailsOnly?: boolean) => void;
+  completeDrop: (isDroppedOutsideTree?: boolean) => void;
   getDraggingNodeInformationFromNodeIndex: (
     nodeIndex: number,
   ) => DraggingNodeInformation | null;
@@ -111,9 +111,6 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
 
   useEffect(() => {
     if (draggingNodeInformation && hoverNodeParams) {
-      if (!draggingNodeInformation) {
-        return;
-      }
       const flatNode = flatTree[hoverNodeParams.nodeIndex];
 
       // Calculate temp drop index
@@ -308,10 +305,12 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
   }, [draggingNodeInformation, hoverNodeParams]);
 
   // Node is dropped
-  function completeDrop(shouldRemoveDragDetailsOnly: boolean = false) {
+  function completeDrop(isDroppedOutsideTree: boolean = false) {
     if (draggingNodeInformation && dropzoneInformation) {
-      let newTree = appleTreeProps.treeData;
-      if (!shouldRemoveDragDetailsOnly) {
+      let newTree = [];
+      if (isDroppedOutsideTree) {
+        newTree = appleTreeProps.treeData;
+      } else {
         newTree = moveNodeToDifferentParent(
           appleTreeProps.treeData,
           treeMap,

@@ -63,32 +63,34 @@ function TreeItemIndentation({ nodeIndex, node }: TreeItemIndentationProps) {
           />
         ))}
       {depth > 0 &&
-        Array.from(new Array(depth - 1)).map((el, i) =>
-          actualDropLineDepth === i + 1 &&
-          (startActualDropLine || midActualDropLine || endActualDropLine) ? (
-            <StlyedHighlightedLineBlock
-              $scaffoldWidth={
-                appleTreeProps.scaffoldBlockPxWidth ||
-                DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
-              }
-              $position={
-                startActualDropLine
-                  ? 'start'
-                  : midActualDropLine
-                    ? 'mid'
-                    : 'end'
-              }
-            />
-          ) : (
-            <StyledVerticalLineBlock
-              key={`rat_item_indentation_${node.mapId}_${i}`}
-              $scaffoldWidth={
-                appleTreeProps.scaffoldBlockPxWidth ||
-                DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
-              }
-            />
-          ),
-        )}
+        Array(depth - 1)
+          .fill(null)
+          .map((_, i) =>
+            actualDropLineDepth === i + 1 &&
+            (startActualDropLine || midActualDropLine || endActualDropLine) ? (
+              <StlyedHighlightedLineBlock
+                $scaffoldWidth={
+                  appleTreeProps.scaffoldBlockPxWidth ||
+                  DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
+                }
+                $position={
+                  startActualDropLine
+                    ? 'start'
+                    : midActualDropLine
+                      ? 'mid'
+                      : 'end'
+                }
+              />
+            ) : (
+              <StyledVerticalLineBlock
+                key={`rat_item_indentation_${node.mapId}_${i}`}
+                $scaffoldWidth={
+                  appleTreeProps.scaffoldBlockPxWidth ||
+                  DEFAULT_SCAFFOLD_BLOCK_PX_WIDTH
+                }
+              />
+            ),
+          )}
       {startActualDropLine ? (
         <StlyedHighlightedLineBlock
           $scaffoldWidth={

@@ -11,7 +11,7 @@ interface DFSProps<T> {
 
 export function dfs<T>({
   treeData,
-  callback,
+  callback = () => {},
   ignoreCollapsed = false,
   onGoingInside,
   onGoingOutside,
