@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { FixedSizeList as VirtualizedList } from 'react-window';
 
 import { DEFAULT_ROW_HEIGHT } from '../../constants';
@@ -31,20 +37,20 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
     }
   }, [virtualListWrapperRef]);
 
-  const scrollVirtualList = (index: number) => {
+  const scrollVirtualList = useCallback((index: number) => {
     if (virtualListRef.current) {
       virtualListRef.current.scrollToItem(index, 'smart');
     }
-  };
+  }, []);
 
-  const scrollNormalList = (index: number) => {
+  const scrollNormalList = useCallback((index: number) => {
     if (normalListRef.current) {
       normalListRef.current.scrollTo({
         top: 33 * index,
         behavior: 'smooth',
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (searchedNodeIndex) {
