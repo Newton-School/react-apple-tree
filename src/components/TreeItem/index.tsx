@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import DragHandle from '../../assets/DragHandle';
 import TriangleSvg from '../../assets/Triangle';
@@ -108,7 +108,7 @@ function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
     }
   }, [appleTreeProps.canDrag, extendedNodeData]);
 
-  useMemo(() => {
+  useEffect(() => {
     if (appleTreeProps.generateNodeProps) {
       setNodePropsData(appleTreeProps.generateNodeProps(extendedNodeData));
     }
