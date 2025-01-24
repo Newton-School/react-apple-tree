@@ -120,7 +120,7 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
             }
           },
           ignoreCollapsed: false,
-          onGoingInside: (node: TreeItem) => {
+          onNodeEnter: (node: TreeItem) => {
             siblingStack = siblingStack.slice(0, path.length + 1);
             if (siblingStack.length < path.length + 1) {
               siblingStack.push(1);
@@ -142,7 +142,7 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
               }),
             );
           },
-          onGoingOutside: () => {
+          onNodeExit: () => {
             treeIndexStack.pop();
             if (lastDepth >= path.length) {
               lastDepth = path.length;
