@@ -7,10 +7,17 @@ interface DropLineInformation {
   actualDropLineDepth?: number;
 }
 
+/**
+ * Retrieves the actual drop line information for a given node index based on the provided drop zone information.
+ *
+ * @param {number} nodeIndex - The index of the node for which to get the drop line information.
+ * @param {DropZoneInformation | null} dropzoneInformation - The information about the drop zone, including the actual drop index and drop depth.
+ * @returns {DropLineInformation} An object containing the drop line information, including whether to start, continue, or end the actual drop line, and the depth of the drop line.
+ */
 export function getActualDropLineInformation(
   nodeIndex: number,
   dropzoneInformation: DropZoneInformation | null,
-) {
+): DropLineInformation {
   const showActualDropLines = dropzoneInformation
     ? (dropzoneInformation.actualDropIndex || -1) >
       dropzoneInformation.dropIndex + 1
