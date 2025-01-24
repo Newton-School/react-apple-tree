@@ -160,7 +160,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
       const actualDropIndex = calculateActualDropIndex(
         hoverDropIndex,
         hoverDropDepth,
-        newFlatList,
+        flatTree,
         draggingNodeInformation,
         dropzoneInformation,
       );
