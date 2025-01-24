@@ -46,7 +46,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   const scrollNormalList = useCallback((index: number) => {
     if (normalListRef.current) {
       normalListRef.current.scrollTo({
-        top: 33 * index,
+        top: (appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT) * index,
         behavior: 'smooth',
       });
     }
@@ -96,7 +96,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
           style={{
             position: 'absolute',
             left: 0,
-            top: (appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT) * i,
+            top: `${(appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT) * i}px`,
             height: `${appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}px`,
             width: '100%',
           }}
