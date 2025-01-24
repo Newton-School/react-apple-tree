@@ -10,7 +10,8 @@ import { DNDContext } from '../../contexts/DNDContext';
 import { PropDataContext } from '../../contexts/PropDataContext';
 import { SearchContext } from '../../contexts/SearchContext';
 import { TreeDataContext } from '../../contexts/TreeDataContext';
-import { useDragHook, useDropHook } from '../../hooks/dnd';
+import useDragHook from '../../hooks/dnd/useDragHook';
+import useDropHook from '../../hooks/dnd/useDropHook';
 import { ExtendedNodeData, ExtendedNodeProps, FlatTreeItem } from '../../types';
 import { checkCanDragNode } from '../../utils/prop-utils';
 import {

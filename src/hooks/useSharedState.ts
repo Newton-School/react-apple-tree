@@ -42,7 +42,19 @@ class SharedState {
 
 const sharedState = new SharedState();
 
-export function useSharedState<T>(
+/**
+ * Custom hook to manage shared state across components.
+ *
+ * @template T - The type of the state value.
+ * @param {string} key - The key to identify the shared state.
+ * @param {T} initialValue - The initial value of the state.
+ * @returns {[T, (value: T) => void]} - Returns the current state value and a function to update the state.
+ *
+ * @example
+ * const [value, setValue] = useSharedState('myKey', 'initialValue');
+ * setValue('newValue');
+ */
+export default function useSharedState<T>(
   key: string,
   initialValue: T,
 ): [T, (value: T) => void] {

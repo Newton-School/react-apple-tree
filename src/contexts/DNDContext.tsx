@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { SHARED_IS_DRAGGING_NODE_STATE } from '../constants';
-import { useSharedState } from '../hooks/useSharedState';
+import useSharedState from '../hooks/useSharedState';
 import {
   ContextProviderProps,
   FlatTreeItem,
