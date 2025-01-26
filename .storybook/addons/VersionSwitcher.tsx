@@ -8,7 +8,7 @@ export default function VersionSwitcher() {
   const [globals, updateGlobals] = useGlobals();
 
   const pathSegments = window.location.pathname.split('/');
-  const currentVersion = pathSegments[2];
+  const currentVersion = pathSegments[1];
 
   useEffect(() => {
     if (VERSIONS.some((version) => version === currentVersion)) {
@@ -18,7 +18,7 @@ export default function VersionSwitcher() {
 
   const handleVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVersion = VERSIONS.find((v) => v === event.target.value);
-    window.location.href = `${window.location.origin}/docs/${selectedVersion}`;
+    window.location.href = `${window.location.origin}/${selectedVersion}`;
   };
 
   return (
