@@ -42,7 +42,8 @@
     "add-cname": "echo 'react-apple-tree.newtonschool.co' > docs/CNAME",
     "build-storybook": "storybook build -o docs/master",
     "build-version-docs": "node ./scripts/build-version-docs.js",
-    "update-version": "node ./scripts/update-version.js"
+    "update-version": "node ./scripts/update-version.js",
+    "check-tag-name": "node ./scripts/check-tag-name.js"
   },
   "pre-commit": "lint:staged",
   "lint-staged": {
