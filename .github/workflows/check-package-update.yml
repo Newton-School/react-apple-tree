@@ -53,3 +53,11 @@ jobs:
           fi
 
           echo "versions.json is up-to-date"
+
+      - name: Save PR Number
+        run: echo ${{ github.event.pull_request.number }} > pr-number.txt
+      - name: Upload PR Number
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-number
+          path: pr-number.txt
