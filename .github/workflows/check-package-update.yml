@@ -1,3 +1,6 @@
+# This workflow is triggered when a pull request is opened against the master branch.
+# It checks if the library version has been updated and if the versions.json file has been modified.
+
 name: Check Library Version Update
 
 on:
