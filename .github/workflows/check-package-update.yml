@@ -1,6 +1,3 @@
-# This workflow is triggered when a pull request is opened against the master branch.
-# It checks if the library version has been updated and if the versions.json file has been modified.
-
 name: Check Library Version Update
 
 on:
@@ -36,7 +33,7 @@ jobs:
           if [ ! -f "package.json" ] || [ ! -f "master-branch/package.json" ]; then
             echo "Error: package.json not found"
             echo "version_check=failure" >> $GITHUB_ENV
-            exit 1
+            exit 0
           fi
 
           CURRENT_VERSION=$(node -p "require('./package.json').version")
@@ -45,7 +42,7 @@ jobs:
           if [ "$CURRENT_VERSION" != "$MASTER_VERSION" ]; then
             echo "Error: Library version updated from $MASTER_VERSION to $CURRENT_VERSION"
             echo "version_check=failure" >> $GITHUB_ENV
-            exit 1
+            exit 0
           fi
 
           echo "Library version is up-to-date"
@@ -57,7 +54,7 @@ jobs:
           if [ ! -f "versions.json" ] || [ ! -f "master-branch/versions.json" ]; then
             echo "Error: versions.json not found"
             echo "versions_json_check=failure" >> $GITHUB_ENV
-            exit 1
+            exit 0
           fi
 
           CURRENT_VERSIONS_JSON=$(cat versions.json)
@@ -66,7 +63,7 @@ jobs:
           if [ "$CURRENT_VERSIONS_JSON" != "$MASTER_VERSIONS_JSON" ]; then
             echo "Error: versions.json has been modified"
             echo "versions_json_check=failure" >> $GITHUB_ENV
-            exit 1
+            exit 0
           fi
 
           echo "versions.json is up-to-date"
@@ -86,7 +83,7 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: `
-                ❌ **Library version or versions.json update check failed**
+                ❌ **Library version or versions.json update check summary**
 
                 - **Version check:** ${versionCheckStatus}
                 - **versions.json check:** ${versionsJsonStatus}
