@@ -1,4 +1,4 @@
-name: Check Package Version Update
+name: Check Library Version Update
 
 on:
   pull_request:
@@ -6,21 +6,35 @@ on:
       - master
 
 jobs:
-  check-version-update:
+  check-library-version:
+    name: Check Library Version Update
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Checkout master branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master-branch
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install jq
-        run: sudo apt-get install jq
-      - name: Check for version update
+
+      - name: Compare library versions
         run: |
-          if git diff --name-only HEAD^ HEAD | grep -q 'package.json'; then
-            if git diff HEAD^ HEAD -- package.json | grep -q '"version"'; then
-              echo "Version update detected in package.json"
-              exit 1
-            fi
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          MASTER_VERSION=$(node -p "require('./master-branch/package.json').version")
+
+          if [ "$CURRENT_VERSION" != "$MASTER_VERSION" ]; then
+            echo "Error: Library version updated from $MASTER_VERSION to $CURRENT_VERSION"
+            exit 1
           fi
-          echo "No version update detected in package.json"
+
+          echo "Library version is up-to-date"
