@@ -60,9 +60,12 @@ jobs:
         run: |
           rm -rf docs/${{ github.event.release.tag_name }}
           cp -r /tmp/rat_docs docs/${{ github.event.release.tag_name }}
+          rm -rf docs/latest
+          cp -r /tmp/rat_docs docs/latest
       - name: Commit and push changes
         run: |
           git add docs/${{ github.event.release.tag_name }} -f
+          git add docs/latest -f
           git commit --allow-empty -m "[BOT] Build Storybook ${{ github.event.release.tag_name }}"
           git push origin gh-pages
 
