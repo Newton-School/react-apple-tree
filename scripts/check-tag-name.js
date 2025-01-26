@@ -39,7 +39,7 @@ if (checkForDocs) {
   const versionsFilePath = path.join(__dirname, 'versions.json');
   const versions = JSON.parse(fs.readFileSync(versionsFilePath, 'utf8'));
 
-  if (versions[versions.length - 1].id === tagName) {
+  if (versions[versions.length - 1] === tagName) {
     console.log('Version is present in versions.json.');
   } else {
     console.error('Version is not present in versions.json.');

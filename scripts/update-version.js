@@ -71,17 +71,12 @@ if (!isPre && (isMajor || isMinor)) {
 
   // Check if the version already exists in versions.json
   const versionExists = versionsJson.some(
-    (version) => version.id === `v${newVersion}`,
+    (version) => version === `v${newVersion}`,
   );
 
   if (!versionExists) {
     // If the version does not exist, add it to versions.json
-    const newVersionEntry = {
-      id: `v${newVersion}`,
-      title: `v${newVersion}`,
-      url: `/${newVersion}`,
-    };
-    versionsJson.push(newVersionEntry);
+    versionsJson.push(`v${newVersion}`);
 
     // Ensure only the latest 10 versions are kept
     if (versionsJson.length > 10) {
