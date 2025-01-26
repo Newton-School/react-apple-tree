@@ -1,0 +1,65 @@
+# This workflow is triggered manually by the user and updates the version of the project.
+# The possible arguments are: patch, minor, major, pre patch, pre minor, pre major.
+# It creates a new branch with the new version and pushes it to the repository.
+# Repository owners need to merge the branch to master in order to update the version of the project.
+
+name: Update Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      args:
+        description: 'Command line arguments for the script'
+        required: true
+        default: 'patch'
+        options:
+          - 'patch'
+          - 'minor'
+          - 'major'
+          - 'pre patch'
+          - 'pre minor'
+          - 'pre major'
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Check args
+        run: |
+          if [[ "${{ github.event.inputs.args }}" != "patch" && "${{ github.event.inputs.args }}" != "minor" && "${{ github.event.inputs.args }}" != "major" && "${{ github.event.inputs.args }}" != "pre patch" && "${{ github.event.inputs.args }}" != "pre minor" && "${{ github.event.inputs.args }}" != "pre major" ]]; then
+            echo "Invalid args: ${{ github.event.inputs.args }}"
+            exit 1
+          fi
+      - name: Setup git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+      - name: Fetch master branch
+        run: |
+          git fetch origin
+          git checkout ${{ github.event.inputs.branch }}
+      - name: Update version
+        run: npm run update-version ${{ github.event.inputs.args }}
+      - name: Get new version
+        id: get_version
+        run: echo "::set-output name=version::$(node -p -e "require('./package.json').version")"
+      - name: Check if branch exists
+        id: check_branch
+        run: |
+          if git ls-remote --exit-code --heads origin "v${{ steps.get_version.outputs.version }}"; then
+            echo "Branch v${{ steps.get_version.outputs.version }} already exists."
+            exit 0
+          fi
+      - name: Create new branch
+        run: |
+          git checkout -b "v${{ steps.get_version.outputs.version }}"
+      - name: Commit and push changes
+        run: |
+          git add package.json package-lock.json versions.json
+          git commit -m "Update version to v${{ steps.get_version.outputs.version }}"
+          git push origin "v${{ steps.get_version.outputs.version }}"
