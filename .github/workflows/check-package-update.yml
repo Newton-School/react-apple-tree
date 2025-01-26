@@ -1,3 +1,7 @@
+# This workflow is triggered when a pull request is opened against the master branch.
+# It checks if the library version has been updated and if the versions.json file has been modified.
+# If the library version or versions.json file has been modified, it creates a comment on the pull request.
+
 name: Check Library Version Update
 
 on:
@@ -91,3 +95,6 @@ jobs:
                 Please review and update the library version or versions.json file if necessary.
               `
             });
+        run: |
+          echo "Error: Library version or versions.json update check failed"
+          exit 1
