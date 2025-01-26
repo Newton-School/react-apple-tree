@@ -3,6 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Exit immediately if a command exits with a non-zero status
+process.on('unhandledRejection', (err) => {
+  console.error(err);
+  process.exit(1);
+});
+
 // Paths to package.json and versions.json
 const PACKAGE_JSON = path.join(__dirname, '../package.json');
 const VERSIONS_JSON = path.join(__dirname, '../versions.json');

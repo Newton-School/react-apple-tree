@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
+// Exit immediately if a command exits with a non-zero status
+process.on('unhandledRejection', (err) => {
+  console.error(err);
+  process.exit(1);
+});
+
 const args = process.argv.slice(2);
 const tagName = args[0];
 const allowPre = args.includes('--allow-pre');
