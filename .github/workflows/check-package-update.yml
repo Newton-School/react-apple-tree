@@ -1,0 +1,55 @@
+# This workflow is triggered when a pull request is opened against the master branch.
+# It checks if the library version has been updated and if the versions.json file has been modified.
+
+name: Check Library Version Update
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-library-version:
+    name: Check Library Version Update
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Checkout master branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master-branch
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Compare library versions
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          MASTER_VERSION=$(node -p "require('./master-branch/package.json').version")
+
+          if [ "$CURRENT_VERSION" != "$MASTER_VERSION" ]; then
+            echo "Error: Library version updated from $MASTER_VERSION to $CURRENT_VERSION"
+            exit 1
+          fi
+
+          echo "Library version is up-to-date"
+
+      - name: Check versions.json changes
+        run: |
+          CURRENT_VERSIONS_JSON=$(cat versions.json)
+          MASTER_VERSIONS_JSON=$(cat master-branch/versions.json)
+
+          if [ "$CURRENT_VERSIONS_JSON" != "$MASTER_VERSIONS_JSON" ]; then
+            echo "Error: versions.json has been modified"
+            exit 1
+          fi
+
+          echo "versions.json is up-to-date"
