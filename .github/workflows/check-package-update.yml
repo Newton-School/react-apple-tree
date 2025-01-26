@@ -89,12 +89,15 @@ jobs:
               body: `
                 ❌ **Library version or versions.json update check summary**
 
-                - **Version check:** ${versionCheckStatus}
-                - **versions.json check:** ${versionsJsonStatus}
+                - Version check: ${versionCheckStatus}
+                - versions.json check: ${versionsJsonStatus}
 
-                Please review and update the library version or versions.json file if necessary.
+                Please make sure that library version is not updated and versions.json file is not modified before merging the pull request.
               `
             });
+
+      - name: Fail Workflow if Checks Fail
+        if: env.version_check == 'failure' || env.versions_json_check == 'failure'
         run: |
-          echo "Error: Library version or versions.json update check failed"
+          echo "Failing the workflow due to failed checks"
           exit 1
