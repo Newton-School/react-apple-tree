@@ -20,11 +20,8 @@ console.log(process.argv);
 
 const VERSION = process.argv[2];
 
-// Check if version name is "main"
-if (VERSION === 'main') {
-  console.error('Error: Version name cannot be "main".');
-  process.exit(1);
-}
+// Check if version name is correct
+execSync(`npm run check-tag-name ${VERSION}`, { stdio: 'inherit' });
 
 const DOCS_DIR = path.join('docs', VERSION);
 

@@ -2,44 +2,29 @@ import React, { useEffect } from 'react';
 import { useGlobals } from '@storybook/manager-api';
 import versions from '../../versions.json';
 
-interface Version {
-  id: string;
-  title: string;
-  url?: string;
-}
-
-const VERSIONS: Version[] = [
-  { id: 'latest', title: 'Latest Version' },
-  ...versions.reverse(),
-];
+const VERSIONS: string[] = ['latest', ...versions.reverse()];
 
 export default function VersionSwitcher() {
   const [globals, updateGlobals] = useGlobals();
 
-  useEffect(() => {
-    const pathSegments = window.location.pathname.split('/');
-    const currentVersion = pathSegments[1];
+  const pathSegments = window.location.pathname.split('/');
+  const currentVersion = pathSegments[1];
 
-    if (VERSIONS.some((version) => version.id === currentVersion)) {
+  useEffect(() => {
+    if (VERSIONS.some((version) => version === currentVersion)) {
       updateGlobals({ version: currentVersion });
     }
   }, []);
 
   const handleVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedVersion = VERSIONS.find((v) => v.id === event.target.value);
-
-    if (selectedVersion?.url) {
-      window.location.href = `${window.location.origin}${selectedVersion.url}`;
-    } else {
-      window.location.href = `${window.location.origin}`;
-      updateGlobals({ version: selectedVersion?.id });
-    }
+    const selectedVersion = VERSIONS.find((v) => v === event.target.value);
+    window.location.href = `${window.location.origin}/${selectedVersion}`;
   };
 
   return (
     <div className="version-switcher">
       <select
-        value={globals.version || 'latest'}
+        value={currentVersion || 'latest'}
         onChange={handleVersionChange}
         style={{
           margin: '0 15px',
@@ -49,8 +34,8 @@ export default function VersionSwitcher() {
         }}
       >
         {VERSIONS.map((version) => (
-          <option key={version.id} value={version.id}>
-            {version.title}
+          <option key={version} value={version}>
+            {version}
           </option>
         ))}
       </select>

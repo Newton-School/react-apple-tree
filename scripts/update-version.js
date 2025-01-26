@@ -3,6 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Exit immediately if a command exits with a non-zero status
+process.on('unhandledRejection', (err) => {
+  console.error(err);
+  process.exit(1);
+});
+
 // Paths to package.json and versions.json
 const PACKAGE_JSON = path.join(__dirname, '../package.json');
 const VERSIONS_JSON = path.join(__dirname, '../versions.json');
@@ -65,17 +71,12 @@ if (!isPre && (isMajor || isMinor)) {
 
   // Check if the version already exists in versions.json
   const versionExists = versionsJson.some(
-    (version) => version.id === `v${newVersion}`,
+    (version) => version === `v${newVersion}`,
   );
 
   if (!versionExists) {
     // If the version does not exist, add it to versions.json
-    const newVersionEntry = {
-      id: `v${newVersion}`,
-      title: `v${newVersion}`,
-      url: `/${newVersion}`,
-    };
-    versionsJson.push(newVersionEntry);
+    versionsJson.push(`v${newVersion}`);
 
     // Ensure only the latest 10 versions are kept
     if (versionsJson.length > 10) {
