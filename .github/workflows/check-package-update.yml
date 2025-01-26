@@ -1,0 +1,103 @@
+# This workflow is triggered when a pull request is opened against the master branch.
+# It checks if the library version has been updated and if the versions.json file has been modified.
+# If the library version or versions.json file has been modified, it creates a comment on the pull request.
+
+name: Check Library Version Update
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-library-version:
+    name: Check Library Version Update
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Checkout master branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master-branch
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Compare library versions
+        id: version-check
+        run: |
+          if [ ! -f "package.json" ] || [ ! -f "master-branch/package.json" ]; then
+            echo "Error: package.json not found"
+            echo "version_check=failure" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          MASTER_VERSION=$(node -p "require('./master-branch/package.json').version")
+
+          if [ "$CURRENT_VERSION" != "$MASTER_VERSION" ]; then
+            echo "Error: Library version updated from $MASTER_VERSION to $CURRENT_VERSION"
+            echo "version_check=failure" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          echo "Library version is up-to-date"
+          echo "version_check=success" >> $GITHUB_ENV
+
+      - name: Check versions.json changes
+        id: versions-json-check
+        run: |
+          if [ ! -f "versions.json" ] || [ ! -f "master-branch/versions.json" ]; then
+            echo "Error: versions.json not found"
+            echo "versions_json_check=failure" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          CURRENT_VERSIONS_JSON=$(cat versions.json)
+          MASTER_VERSIONS_JSON=$(cat master-branch/versions.json)
+
+          if [ "$CURRENT_VERSIONS_JSON" != "$MASTER_VERSIONS_JSON" ]; then
+            echo "Error: versions.json has been modified"
+            echo "versions_json_check=failure" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          echo "versions.json is up-to-date"
+          echo "versions_json_check=success" >> $GITHUB_ENV
+
+      - name: Create GitHub Comment on Failure
+        if: env.version_check == 'failure' || env.versions_json_check == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const versionCheckStatus = process.env.version_check === 'failure' ? '❌ Failed' : '✅ Passed';
+            const versionsJsonStatus = process.env.versions_json_check === 'failure' ? '❌ Failed' : '✅ Passed';
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `
+                ❌ **Library version or versions.json update check summary**
+
+                - Version check: ${versionCheckStatus}
+                - versions.json check: ${versionsJsonStatus}
+
+                Please make sure that library version is not updated and versions.json file is not modified before merging the pull request.
+              `
+            });
+
+      - name: Fail Workflow if Checks Fail
+        if: env.version_check == 'failure' || env.versions_json_check == 'failure'
+        run: |
+          echo "Failing the workflow due to failed checks"
+          exit 1

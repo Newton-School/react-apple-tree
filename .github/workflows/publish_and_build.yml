@@ -18,6 +18,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Check Tag Name
+        run: npm run check-tag-name ${{ github.event.release.tag_name }} --allow-pre
       - name: Install dependencies
         run: npm ci
       - name: Build Package
@@ -48,6 +50,8 @@ jobs:
         run: |
           git fetch origin
           git checkout master
+      - name: Check Tag Name
+        run: npm run check-tag-name ${{ github.event.release.tag_name }} --docs || exit 0
       - name: Install dependencies
         run: npm ci
       - name: Build storybook docs
@@ -60,9 +64,12 @@ jobs:
         run: |
           rm -rf docs/${{ github.event.release.tag_name }}
           cp -r /tmp/rat_docs docs/${{ github.event.release.tag_name }}
+          rm -rf docs/latest
+          cp -r /tmp/rat_docs docs/latest
       - name: Commit and push changes
         run: |
           git add docs/${{ github.event.release.tag_name }} -f
+          git add docs/latest -f
           git commit --allow-empty -m "[BOT] Build Storybook ${{ github.event.release.tag_name }}"
           git push origin gh-pages
 
@@ -74,6 +81,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Check Tag Name
+        run: npm run check-tag-name ${{ github.event.release.tag_name }} --docs || exit 0
       - name: Create and push branch
         env:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}
