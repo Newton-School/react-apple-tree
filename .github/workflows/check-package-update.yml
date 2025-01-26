@@ -38,3 +38,15 @@ jobs:
           fi
 
           echo "Library version is up-to-date"
+
+      - name: Check versions.json changes
+        run: |
+          CURRENT_VERSIONS_JSON=$(cat versions.json)
+          MASTER_VERSIONS_JSON=$(cat master-branch/versions.json)
+
+          if [ "$CURRENT_VERSIONS_JSON" != "$MASTER_VERSIONS_JSON" ]; then
+            echo "Error: versions.json has been modified"
+            exit 1
+          fi
+
+          echo "versions.json is up-to-date"
