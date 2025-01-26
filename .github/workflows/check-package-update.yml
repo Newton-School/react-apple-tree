@@ -1,0 +1,26 @@
+name: Check Package Version Update
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-version-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install jq
+        run: sudo apt-get install jq
+      - name: Check for version update
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q 'package.json'; then
+            if git diff HEAD^ HEAD -- package.json | grep -q '"version"'; then
+              echo "Version update detected in package.json"
+              exit 1
+            fi
+          fi
+          echo "No version update detected in package.json"
