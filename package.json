@@ -1,13 +1,13 @@
 {
   "name": "@newtonschool/react-apple-tree",
-  "version": "1.1.4",
+  "version": "1.1.10",
   "description": "React Apple Tree is an updated version of the popular library react-sortable-tree.",
   "keywords": [
     "React Apple Tree",
     "Sortable Tree",
     "React"
   ],
-  "homepage": "https://github.com/Newton-School/react-apple-tree",
+  "homepage": "https://react-apple-tree.newtonschool.co/",
   "author": "Newton School",
   "repository": {
     "type": "git",
@@ -40,9 +40,10 @@
     "prettify": "prettier --write",
     "storybook": "storybook dev -p 6006",
     "add-cname": "echo 'react-apple-tree.newtonschool.co' > docs/CNAME",
-    "prepare:storybook": "echo \"LIBRARY_VERSION=$(node -p 'require(\"./package.json\").version')\" > .env",
-    "build-storybook": "npm run prepare:storybook && storybook build -o docs/main",
-    "build-version-docs": "./scripts/build-version-docs.sh"
+    "build-storybook": "storybook build -o docs/master",
+    "build-version-docs": "node ./scripts/build-version-docs.js",
+    "update-version": "node ./scripts/update-version.js",
+    "check-tag-name": "node ./scripts/check-tag-name.js"
   },
   "pre-commit": "lint:staged",
   "lint-staged": {
@@ -92,7 +93,6 @@
     "@types/lodash.clonedeep": "^4.5.9",
     "@types/react": "^18.3.3",
     "@types/react-window": "^1.8.8",
-    "@types/styled-components": "^5.1.34",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
     "eslint": "^8.57.1",
