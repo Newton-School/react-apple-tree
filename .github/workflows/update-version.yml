@@ -91,3 +91,6 @@ jobs:
               console.error('Failed to create Pull Request:', error);
               core.setFailed(error.message);
             }
+      - name: Output branch name
+        id: get_branch
+        run: echo "::set-output name=branch::v${{ steps.get_version.outputs.version }}"
