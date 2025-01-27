@@ -62,30 +62,8 @@ jobs:
       - name: Create new branch
         run: |
           git checkout -b "v${{ steps.get_version.outputs.version }}"
-          git commit --allow-empty -m "Create branch"
-          git push origin "v${{ steps.get_version.outputs.version }}"
-      - name: Create Pull Request
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const version = process.env.VERSION || '${{ steps.get_version.outputs.version }}';
-
-            try {
-              const { data: pr } = await github.rest.pulls.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `Update version to v${version}`,
-                head: `v${version}`,
-                base: 'master',
-              });
-              console.log(`Pull Request created successfully: ${pr.html_url}`);
-            } catch (error) {
-              console.error('Failed to create Pull Request:', error);
-              core.setFailed(error.message);
-            }
       - name: Commit and push changes
         run: |
           git add package.json package-lock.json versions.json
           git commit -m "Update version to v${{ steps.get_version.outputs.version }}"
-          git push origin "v${{ steps.get_version.outputs.version }}" --force
+          git push origin "v${{ steps.get_version.outputs.version }}"
