@@ -27,7 +27,7 @@ Fixes #
 
 - [ ] PR name uses present imperative tense and specifically describes the changes
   - Incorrect: ✅ Update version of react-dnd
-  - Correct: Dependency version update
+  - Correct: ❌ Dependency version update
 - [ ] I have performed a self-review of my code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
