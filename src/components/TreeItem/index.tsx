@@ -45,7 +45,7 @@ function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
     onHoverNode,
     completeDrop,
   } = useContext(DNDContext);
-  const { searchedNodeMap, searchedNodeIndex } = useContext(SearchContext);
+  const { searchedNodeMap, highlightedNodeIndex } = useContext(SearchContext);
 
   const nodeElement = useRef(null);
 
@@ -90,14 +90,14 @@ function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
       isSearchFocus:
         typeof appleTreeProps.searchFocusOffset === 'number' &&
         !!searchedNodeMap[node.mapId] &&
-        searchedNodeIndex === nodeIndex,
+        highlightedNodeIndex === nodeIndex,
       isSearchMatch: !!searchedNodeMap[node.mapId],
       lowerSiblingCounts: [],
       parentNode,
       path: node.path,
       treeIndex: nodeIndex,
     });
-  }, [treeNode, searchedNodeIndex, searchedNodeMap]);
+  }, [treeNode, highlightedNodeIndex, searchedNodeMap]);
 
   useEffect(() => {
     if (typeof appleTreeProps.canDrag !== 'undefined') {
@@ -186,7 +186,7 @@ function TreeItem({ style, nodeIndex, node }: TreeItemComponentProps) {
           $isSearchFocus={
             typeof appleTreeProps.searchFocusOffset === 'number' &&
             !!searchedNodeMap[node.mapId] &&
-            searchedNodeIndex === nodeIndex
+            highlightedNodeIndex === nodeIndex
           }
           $isDragging={isDragging}
           $dropzone={

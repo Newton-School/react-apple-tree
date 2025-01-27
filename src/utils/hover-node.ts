@@ -41,7 +41,8 @@ export function calculateTempDropIndex(
 }
 
 /**
- * Removes the dragging node from the flat list if it exists and adjusts the drop index accordingly.
+ * Removes the dragging node from the flat list if it exists.
+ * Also adjusts the drop index in the new flat tree list.
  *
  * @param {number} dropIndex - The index where the node is being dropped.
  * @param {FlatTreeItem[]} flatList - The list of flat tree items.
@@ -72,7 +73,7 @@ export function removeDragggingNodeIfExists(
 
 /**
  * Removes the dropzone node from the flat list if it exists.
- * Used to remove duplicate dropzone nodes in race conditions.
+ * Used to remove previous dropzone nodes to create space for new dropzone.
  *
  * @param {number} dropIndex - The index where the node is being dropped.
  * @param {FlatTreeItem[]} flatList - The list of flat tree items.
@@ -124,15 +125,16 @@ export function calculateActualDropDepth<T>(
   dropzoneInformation: DropZoneInformation | null,
   canNodeHaveChildren?: CanNodeHaveChildrenFn<T> | boolean,
 ): number {
+  let actualDropDepth = dropDepth;
   if (dropIndex === 0) {
-    dropDepth = 0;
+    actualDropDepth = 0;
   } else {
     let start = dropIndex - 1;
     while (start >= 0) {
       if (
         flatTree[start].mapId === draggingNodeInformation.flatNode.mapId ||
         flatTree[start].mapId === dropzoneInformation?.flatNode.mapId ||
-        calculateNodeDepth(flatTree[start]) > dropDepth
+        calculateNodeDepth(flatTree[start]) > actualDropDepth
       ) {
         start -= 1;
       } else {
@@ -143,24 +145,24 @@ export function calculateActualDropDepth<T>(
   }
   if (dropIndex <= 0) {
     dropIndex = 0;
-    dropDepth = 1;
+    actualDropDepth = 1;
   } else {
     const prevDepth = calculateNodeDepth(flatTree[dropIndex - 1]);
-    if (dropDepth <= prevDepth) {
-      dropDepth = prevDepth;
+    if (actualDropDepth <= prevDepth) {
+      actualDropDepth = prevDepth;
     } else if (
       runCanNodeHaveChildren(
         canNodeHaveChildren,
         treeMap[flatTree[dropIndex - 1].mapId] as TreeItem<T>,
       )
     ) {
-      dropDepth = prevDepth + 1;
+      actualDropDepth = prevDepth + 1;
     } else {
-      dropDepth = prevDepth;
+      actualDropDepth = prevDepth;
     }
   }
 
-  return dropDepth;
+  return actualDropDepth;
 }
 
 /**
@@ -246,7 +248,7 @@ export function calculateActualDropIndex(
  * @param {DraggingNodeInformation} draggingNodeInformation - Information about the node being dragged.
  * @returns {OnDragPreviousAndNextLocation<T> & NodeData<T>} - The data required to move the node, including previous and next locations.
  */
-export function constructMoveNodeData<T>(
+export function constructNodeMoveData<T>(
   treeMap: TreeMap,
   flatList: FlatTreeItem[],
   parentKey: NodeKey | null,
@@ -269,7 +271,7 @@ export function constructMoveNodeData<T>(
     }
   }
 
-  const moveNodeData = {
+  const nodeMoveData = {
     node: draggingNodeInformation.treeNode,
     path: [...nextParentPath, draggingNodeInformation.flatNode.mapId],
     treeIndex: draggingNodeInformation.dragStartIndex,
@@ -281,7 +283,7 @@ export function constructMoveNodeData<T>(
     prevTreeIndex: draggingNodeInformation.dragStartIndex,
   };
 
-  return moveNodeData as OnDragPreviousAndNextLocation<T> & NodeData<T>;
+  return nodeMoveData as OnDragPreviousAndNextLocation<T> & NodeData<T>;
 }
 
 /**

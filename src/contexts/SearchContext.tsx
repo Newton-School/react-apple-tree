@@ -17,12 +17,12 @@ import { TreeDataContext } from './TreeDataContext';
 
 interface SearchContextProps {
   searchedNodeMap: SearchedNodeMap;
-  searchedNodeIndex: number | null;
+  highlightedNodeIndex: number | null;
 }
 
 const SearchContext = createContext<SearchContextProps>({
   searchedNodeMap: {},
-  searchedNodeIndex: null,
+  highlightedNodeIndex: null,
 });
 
 function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
@@ -31,16 +31,16 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
     useContext(TreeDataContext);
 
   const [searchedNodeMap, setSearchedNodeMap] = useState<SearchedNodeMap>({});
-  const [searchedNodeIndex, setSearchedNodeIndex] = useState<number | null>(
-    null,
-  );
+  const [highlightedNodeIndex, setHighlightedNodeIndex] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     let searchedNodesList: Array<NodeData> = [];
     let newTreeMap: TreeMap = { ...treeMap };
     let newFlatArray: Array<FlatTreeItem> = [...flatTree];
     if (appleTreeProps.searchQuery === false) {
-      setSearchedNodeIndex(null);
+      setHighlightedNodeIndex(null);
       setSearchedNodeMap({});
     } else {
       if (
@@ -158,7 +158,7 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
       if (typeof appleTreeProps.searchFocusOffset === 'number') {
         const highlightedNodeIndex =
           searchedNodesList[appleTreeProps.searchFocusOffset]?.treeIndex;
-        setSearchedNodeIndex(highlightedNodeIndex);
+        setHighlightedNodeIndex(highlightedNodeIndex);
       }
       if (appleTreeProps.searchFinishCallback) {
         appleTreeProps.searchFinishCallback(searchedNodesList);
@@ -169,7 +169,7 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
   }, [appleTreeProps.searchQuery]);
 
   return (
-    <SearchContext.Provider value={{ searchedNodeMap, searchedNodeIndex }}>
+    <SearchContext.Provider value={{ searchedNodeMap, highlightedNodeIndex }}>
       {props.children}
     </SearchContext.Provider>
   );

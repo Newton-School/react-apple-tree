@@ -29,7 +29,7 @@ export type DropZoneInformation = {
   nextParentKey: NodeKey | null;
   siblingIndex: number;
   canDrop: boolean;
-  moveNodeData: OnDragPreviousAndNextLocation & NodeData;
+  nodeMoveData: OnDragPreviousAndNextLocation & NodeData;
 };
 
 export interface StartDragProps {

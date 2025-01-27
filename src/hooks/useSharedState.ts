@@ -43,7 +43,7 @@ class SharedState {
 const sharedState = new SharedState();
 
 /**
- * Custom hook to manage shared state across components.
+ * Custom hook to manage shared state across tree instances.
  *
  * @template T - The type of the state value.
  * @param {string} key - The key to identify the shared state.

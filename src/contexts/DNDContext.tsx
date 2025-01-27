@@ -8,7 +8,7 @@ import {
   calculateActualDropIndex,
   calculateTempDropIndex,
   constructDropzone,
-  constructMoveNodeData,
+  constructNodeMoveData,
   expandPreviousNodeToInsertInSubtree,
   removeDragggingNodeIfExists,
   removeDropzoneNodeIfExists,
@@ -172,7 +172,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
       );
 
       // Construct move node data
-      const moveNodeData = constructMoveNodeData(
+      const nodeMoveData = constructNodeMoveData(
         newTreeMap,
         newFlatList,
         parentKey,
@@ -183,7 +183,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
       // Checking can drop
       let canDrop = true;
       if (appleTreeProps.canDrop) {
-        canDrop = appleTreeProps.canDrop(moveNodeData);
+        canDrop = appleTreeProps.canDrop(nodeMoveData);
       }
 
       // Creating new dropzone node
@@ -208,7 +208,7 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
         nextParentKey: parentKey,
         siblingIndex: siblingCount,
         canDrop,
-        moveNodeData,
+        nodeMoveData,
       });
     }
   }, [draggingNodeInformation, onHoverNodeParams]);
@@ -233,9 +233,9 @@ function DNDContextProvider(props: ContextProviderProps): React.JSX.Element {
           draggingNodeInformation.treeNode.expanded = true;
         }
         appleTreeProps.onMoveNode?.({
-          ...dropzoneInformation.moveNodeData,
+          ...dropzoneInformation.nodeMoveData,
           treeData: structuredClone(newTree),
-          nextParentNode: dropzoneInformation.moveNodeData.nextParent,
+          nextParentNode: dropzoneInformation.nodeMoveData.nextParent,
         });
       }
       setAppleTreeProps({ treeData: [...newTree] });

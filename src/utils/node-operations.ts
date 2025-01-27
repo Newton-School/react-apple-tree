@@ -134,9 +134,9 @@ export function collapseNode<T>(
         break;
       }
     }
-    flatTree = [...flatTree.slice(0, start + 1), ...flatTree.slice(end)];
+    flatTree.splice(start + 1, end - start - 1);
   }
-  return flatTree;
+  return [...flatTree];
 }
 
 /**

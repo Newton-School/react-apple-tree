@@ -19,7 +19,7 @@ import ItemRenderer from './ItemRenderer';
 export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   const { appleTreeProps, setAppleTreeProps } = useContext(PropDataContext);
   const { flatTree } = useContext(TreeDataContext);
-  const { searchedNodeIndex } = useContext(SearchContext);
+  const { highlightedNodeIndex } = useContext(SearchContext);
 
   const [virtualListHeight, setVirtualListHeight] = useState(0);
 
@@ -53,11 +53,11 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   }, []);
 
   useEffect(() => {
-    if (searchedNodeIndex) {
-      scrollVirtualList(searchedNodeIndex);
-      scrollNormalList(searchedNodeIndex);
+    if (highlightedNodeIndex) {
+      scrollVirtualList(highlightedNodeIndex);
+      scrollNormalList(highlightedNodeIndex);
     }
-  }, [searchedNodeIndex]);
+  }, [highlightedNodeIndex]);
 
   if (appleTreeProps.isVirtualized) {
     return (
