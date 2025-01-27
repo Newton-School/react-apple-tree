@@ -166,7 +166,7 @@ export function calculateActualDropDepth<T>(
 }
 
 /**
- * Expands the previous node in the flat list to traverse its subtree while dragging a node.
+ * Expands the previous node in the flat list to traverse its subtree while dragging a node
  *
  * @param {number} hoverIndex - The index of the node being hovered over in the flat list.
  * @param {number} hoverDepth - The depth of the node being hovered over.
