@@ -4,6 +4,11 @@
 
 name: Update Version
 
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
 on:
   workflow_dispatch:
     inputs:
