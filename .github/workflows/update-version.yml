@@ -1,7 +1,6 @@
 # This workflow is triggered manually by the user and updates the version of the project.
 # The possible arguments are: patch, minor, major, pre patch, pre minor, pre major.
-# It creates a new branch with the new version and pushes it to the repository.
-# Repository owners need to merge the branch to master in order to update the version of the project.
+# It creates a new branch with the new version, pushes it to the repository, and creates a PR.
 
 name: Update Version
 
@@ -63,3 +62,27 @@ jobs:
           git add package.json package-lock.json versions.json
           git commit -m "Update version to v${{ steps.get_version.outputs.version }}"
           git push origin "v${{ steps.get_version.outputs.version }}"
+      - name: Create Pull Request
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const version = process.env.VERSION || '${{ steps.get_version.outputs.version }}';
+
+            try {
+              const { data: pr } = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Update version to v${version}`,
+                head: `v${version}`,
+                base: 'master',
+                body: `
+                  # Version Update Pull Request
+                  New version: v${version}
+                `
+              });
+              console.log(`Pull Request created successfully: ${pr.html_url}`);
+            } catch (error) {
+              console.error('Failed to create Pull Request:', error);
+              core.setFailed(error.message);
+            }
