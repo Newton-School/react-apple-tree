@@ -70,7 +70,7 @@ describe('ReactAppleTree', () => {
         })}
       />,
     );
-    expect(screen.queryByText('Node - Node 100')).toBeInTheDocument();
+    expect(screen.queryByText('Node - Node 1')).toBeInTheDocument();
   });
 
   // Rendering nodes
