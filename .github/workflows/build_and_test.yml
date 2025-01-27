@@ -57,6 +57,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Determine branch to checkout
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "Checking out push branch: ${{ github.ref_name }}"
+            git checkout ${{ github.ref_name }}
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "Checking out PR branch: ${{ github.head_ref }}"
+            git fetch origin ${{ github.head_ref }}
+            git checkout ${{ github.head_ref }}
+          elif [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            echo "Checking out workflow_run branch: ${{ github.event.inputs.version_branch }}"
+            git fetch origin ${{ github.event.inputs.version_branch }}"
+            git checkout ${{ github.event.inputs.version_branch }}
+          else
+            echo "Unsupported event type: ${{ github.event_name }}"
+            exit 1
+          fi
       - uses: actions/setup-node@v3
         with:
           node-version: 20
