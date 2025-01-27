@@ -68,7 +68,7 @@ jobs:
             git checkout ${{ github.head_ref }}
           elif [[ "${{ github.event_name }}" == "workflow_run" ]]; then
             echo "Checking out workflow_run branch: ${{ github.event.inputs.version_branch }}"
-            git fetch origin ${{ github.event.inputs.version_branch }}"
+            git fetch origin ${{ github.event.inputs.version_branch }}
             git checkout ${{ github.event.inputs.version_branch }}
           else
             echo "Unsupported event type: ${{ github.event_name }}"
