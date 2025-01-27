@@ -17,12 +17,12 @@ import { TreeDataContext } from './TreeDataContext';
 
 interface SearchContextProps {
   searchedNodeMap: SearchedNodeMap;
-  searchedNodeIndex: number | null;
+  highlightedNodeIndex: number | null;
 }
 
 const SearchContext = createContext<SearchContextProps>({
   searchedNodeMap: {},
-  searchedNodeIndex: null,
+  highlightedNodeIndex: null,
 });
 
 function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
@@ -31,16 +31,16 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
     useContext(TreeDataContext);
 
   const [searchedNodeMap, setSearchedNodeMap] = useState<SearchedNodeMap>({});
-  const [searchedNodeIndex, setSearchedNodeIndex] = useState<number | null>(
-    null,
-  );
+  const [highlightedNodeIndex, setHighlightedNodeIndex] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     let searchedNodesList: Array<NodeData> = [];
     let newTreeMap: TreeMap = { ...treeMap };
     let newFlatArray: Array<FlatTreeItem> = [...flatTree];
     if (appleTreeProps.searchQuery === false) {
-      setSearchedNodeIndex(null);
+      setHighlightedNodeIndex(null);
       setSearchedNodeMap({});
     } else {
       if (
@@ -54,7 +54,7 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
           appleTreeProps.getNodeKey,
         );
       }
-      if (appleTreeProps.searchQuery && appleTreeProps.searchMethod) {
+      if (appleTreeProps.searchQuery) {
         const newSearchedNodeMap: SearchedNodeMap = {};
         let treeIndexStack: Array<number> = [-1];
         let siblingStack: Array<number> = [];
@@ -64,10 +64,10 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
           treeData: appleTreeProps.treeData,
           callback: (node: TreeItem) => {
             const isNodeExpanded =
-              !!node.expanded && !appleTreeProps.onlyExpandSearchedNodes;
+              node.expanded && !appleTreeProps.onlyExpandSearchedNodes;
             const parentKey = path.length > 1 ? path[path.length - 2] : null;
             const isParentExpanded = parentKey
-              ? !!treeMap[parentKey].expanded
+              ? treeMap[parentKey].expanded
               : false;
             let searchMatch = false;
             if (appleTreeProps.searchMethod) {
@@ -96,8 +96,8 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
                     newFlatArray,
                     appleTreeProps.getNodeKey,
                   );
-                  newTreeMap = { ...newTreeMap, ...map };
-                  newFlatArray = [...flatArray];
+                  newTreeMap = map;
+                  newFlatArray = flatArray;
                 });
               } else {
                 newSearchedNodeMap[key] = false;
@@ -120,7 +120,7 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
             }
           },
           ignoreCollapsed: false,
-          onGoingInside: (node: TreeItem) => {
+          onNodeEnter: (node: TreeItem) => {
             siblingStack = siblingStack.slice(0, path.length + 1);
             if (siblingStack.length < path.length + 1) {
               siblingStack.push(1);
@@ -142,7 +142,7 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
               }),
             );
           },
-          onGoingOutside: () => {
+          onNodeExit: () => {
             treeIndexStack.pop();
             if (lastDepth >= path.length) {
               lastDepth = path.length;
@@ -155,19 +155,21 @@ function SearchContextProvider(props: ContextProviderProps): React.JSX.Element {
         setSearchedNodeMap({});
         searchedNodesList = [];
       }
-      const highlightedNodeIndex =
-        searchedNodesList[appleTreeProps.searchFocusOffset || 0]?.treeIndex;
-      setSearchedNodeIndex(highlightedNodeIndex);
+      if (typeof appleTreeProps.searchFocusOffset === 'number') {
+        const highlightedNodeIndex =
+          searchedNodesList[appleTreeProps.searchFocusOffset]?.treeIndex;
+        setHighlightedNodeIndex(highlightedNodeIndex);
+      }
       if (appleTreeProps.searchFinishCallback) {
         appleTreeProps.searchFinishCallback(searchedNodesList);
       }
       setFlatTree(newFlatArray);
-      setTreeMap({ ...newTreeMap });
+      setTreeMap(newTreeMap);
     }
   }, [appleTreeProps.searchQuery]);
 
   return (
-    <SearchContext.Provider value={{ searchedNodeMap, searchedNodeIndex }}>
+    <SearchContext.Provider value={{ searchedNodeMap, highlightedNodeIndex }}>
       {props.children}
     </SearchContext.Provider>
   );

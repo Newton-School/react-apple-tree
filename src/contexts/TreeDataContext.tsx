@@ -37,13 +37,21 @@ function TreeDataContextProvider(
         appleTreeProps.treeData,
         appleTreeProps.getNodeKey,
       );
-      setTreeMap({ ...map });
-      setFlatTree([...flatArray]);
+      setTreeMap(map);
+      setFlatTree(flatArray);
     }
   }, [appleTreeProps]);
 
   function expandOrCollapseNode(nodeKey: NodeKey) {
-    if (!treeMap[nodeKey].expanded) {
+    if (treeMap[nodeKey].expanded) {
+      const flatArray = collapseNode(
+        nodeKey,
+        treeMap[nodeKey],
+        treeMap,
+        flatTree,
+      );
+      setFlatTree(flatArray);
+    } else {
       const [map, flatArray] = expandNode(
         nodeKey,
         treeMap[nodeKey],
@@ -51,17 +59,8 @@ function TreeDataContextProvider(
         flatTree,
         appleTreeProps.getNodeKey,
       );
-
-      setTreeMap({ ...map });
-      setFlatTree([...flatArray]);
-    } else {
-      const flatArray = collapseNode(
-        nodeKey,
-        treeMap[nodeKey],
-        treeMap,
-        flatTree,
-      );
-      setFlatTree([...flatArray]);
+      setTreeMap(map);
+      setFlatTree(flatArray);
     }
     appleTreeProps.onChange(appleTreeProps.treeData);
   }

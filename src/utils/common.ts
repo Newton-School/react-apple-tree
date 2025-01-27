@@ -44,11 +44,12 @@ export function removeItemAtGivenIndexFromArray<T>(
   if (index < 0 || index >= array.length) {
     return array;
   }
-  return [...array.slice(0, index), ...array.slice(index + 1)];
+  array.splice(index, 1);
+  return array;
 }
 
 /**
- * Inserts an item into an array at the specified index.
+ * Inserts items into an array at the specified index.
  *
  * @template T - The type of the array elements.
  * @param {T[]} array - The array to insert the item into.

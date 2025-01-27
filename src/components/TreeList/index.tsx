@@ -1,5 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { FixedSizeList as VirtualizedList } from 'react-window';
 
 import { DEFAULT_ROW_HEIGHT } from '../../constants';
 import { PropDataContext } from '../../contexts/PropDataContext';
@@ -13,12 +19,12 @@ import ItemRenderer from './ItemRenderer';
 export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   const { appleTreeProps, setAppleTreeProps } = useContext(PropDataContext);
   const { flatTree } = useContext(TreeDataContext);
-  const { searchedNodeIndex } = useContext(SearchContext);
+  const { highlightedNodeIndex } = useContext(SearchContext);
 
   const [virtualListHeight, setVirtualListHeight] = useState(0);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const virtualListRef = useRef<List>(null);
+  const virtualListWrapperRef = useRef<HTMLDivElement>(null);
+  const virtualListRef = useRef<VirtualizedList>(null);
   const normalListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,51 +32,62 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
   }, [props]);
 
   useEffect(() => {
-    if (wrapperRef.current) {
-      setVirtualListHeight(wrapperRef.current.clientHeight);
+    if (virtualListWrapperRef.current) {
+      setVirtualListHeight(virtualListWrapperRef.current.clientHeight);
     }
-  }, [wrapperRef]);
+  }, [virtualListWrapperRef]);
 
-  const scrollVirtualList = (index: number) => {
+  const scrollVirtualList = useCallback((index: number) => {
     if (virtualListRef.current) {
       virtualListRef.current.scrollToItem(index, 'smart');
     }
-  };
+  }, []);
 
-  const scrollNormalList = (index: number) => {
+  const scrollNormalList = useCallback((index: number) => {
     if (normalListRef.current) {
       normalListRef.current.scrollTo({
-        top: 33 * index,
+        top: (appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT) * index,
         behavior: 'smooth',
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (searchedNodeIndex) {
-      scrollVirtualList(searchedNodeIndex);
-      scrollNormalList(searchedNodeIndex);
+    if (highlightedNodeIndex) {
+      scrollVirtualList(highlightedNodeIndex);
+      scrollNormalList(highlightedNodeIndex);
     }
-  }, [searchedNodeIndex]);
+  }, [highlightedNodeIndex]);
 
-  return appleTreeProps.isVirtualized ? (
-    <div ref={wrapperRef} style={{ width: '100%', height: '100%' }}>
-      <List
-        ref={virtualListRef}
-        height={virtualListHeight || 500}
-        width="100%"
-        itemSize={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
-        itemCount={flatTree.length}
-        itemData={flatTree}
-        itemKey={(index, data) => data[index].mapId}
-        data-testid="virtualized-list"
-        {...appleTreeProps.reactVirtualizedListProps}
+  if (appleTreeProps.isVirtualized) {
+    return (
+      <div
+        ref={virtualListWrapperRef}
+        style={{ width: '100%', height: '100%' }}
       >
-        {ItemRenderer}
-      </List>
-    </div>
-  ) : (
-    <StyledNormalList ref={normalListRef} data-testid="non-virtualized-list">
+        <VirtualizedList
+          ref={virtualListRef}
+          height={virtualListHeight || 500}
+          width="100%"
+          itemSize={appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}
+          itemCount={flatTree.length}
+          itemData={flatTree}
+          itemKey={(index, data) => data[index].mapId}
+          data-testid="virtualized-list"
+          {...appleTreeProps.reactVirtualizedListProps}
+        >
+          {ItemRenderer}
+        </VirtualizedList>
+      </div>
+    );
+  }
+
+  return (
+    <StyledNormalList
+      ref={normalListRef}
+      className="virtualized-list"
+      data-testid="non-virtualized-list"
+    >
       {flatTree.map((node, i) => (
         <TreeItem
           key={node.mapId}
@@ -79,7 +96,7 @@ export default function TreeList<T>(props: ReactAppleTreeProps<T>) {
           style={{
             position: 'absolute',
             left: 0,
-            top: (appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT) * i,
+            top: `${(appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT) * i}px`,
             height: `${appleTreeProps.rowHeight || DEFAULT_ROW_HEIGHT}px`,
             width: '100%',
           }}
