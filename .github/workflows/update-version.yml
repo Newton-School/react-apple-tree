@@ -89,4 +89,4 @@ jobs:
             }
       - name: Output branch name
         id: get_branch
-        run: echo "::set-output name=branch::v${{ steps.get_version.outputs.version_branch }}"
+        run: echo "::set-output name=version_branch::v${{ steps.get_version.outputs.version }}"
