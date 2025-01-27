@@ -81,10 +81,6 @@ jobs:
                 title: `Update version to v${version}`,
                 head: `v${version}`,
                 base: 'master',
-                body: `
-                  # Version Update Pull Request
-                  New version: v${version}
-                `
               });
               console.log(`Pull Request created successfully: ${pr.html_url}`);
             } catch (error) {
@@ -93,4 +89,4 @@ jobs:
             }
       - name: Output branch name
         id: get_branch
-        run: echo "::set-output name=branch::v${{ steps.get_version.outputs.version }}"
+        run: echo "::set-output name=branch::v${{ steps.get_version.outputs.version_branch }}"
