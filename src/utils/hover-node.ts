@@ -73,7 +73,7 @@ export function removeDragggingNodeIfExists(
 
 /**
  * Removes the dropzone node from the flat list if it exists.
- * Used to remove previous dropzone nodes to create space for new dropzone.
+ * Removes previous dropzone nodes to create space for new dropzone.
  *
  * @param {number} dropIndex - The index where the node is being dropped.
  * @param {FlatTreeItem[]} flatList - The list of flat tree items.
@@ -125,7 +125,7 @@ export function calculateActualDropDepth<T>(
   dropzoneInformation: DropZoneInformation | null,
   canNodeHaveChildren?: CanNodeHaveChildrenFn<T> | boolean,
 ): number {
-  let actualDropDepth = dropDepth;
+  let actualDropDepth;
   if (dropIndex === 0) {
     actualDropDepth = 0;
   } else {
@@ -134,7 +134,7 @@ export function calculateActualDropDepth<T>(
       if (
         flatTree[start].mapId === draggingNodeInformation.flatNode.mapId ||
         flatTree[start].mapId === dropzoneInformation?.flatNode.mapId ||
-        calculateNodeDepth(flatTree[start]) > actualDropDepth
+        calculateNodeDepth(flatTree[start]) > dropDepth
       ) {
         start -= 1;
       } else {
@@ -148,7 +148,7 @@ export function calculateActualDropDepth<T>(
     actualDropDepth = 1;
   } else {
     const prevDepth = calculateNodeDepth(flatTree[dropIndex - 1]);
-    if (actualDropDepth <= prevDepth) {
+    if (dropDepth <= prevDepth) {
       actualDropDepth = prevDepth;
     } else if (
       runCanNodeHaveChildren(
