@@ -19,7 +19,12 @@ jobs:
         with:
           node-version: 20
       - name: Check Tag Name
-        run: npm run check-tag-name ${{ github.event.release.tag_name }} --allow-pre
+        run: |
+          if [ "${{ github.event.release.prerelease }}" = "true" ]; then
+            npm run check-tag-name ${{ github.event.release.tag_name }} --pre
+          else
+            npm run check-tag-name ${{ github.event.release.tag_name }}
+          fi
       - name: Install dependencies
         run: npm ci
       - name: Build Package

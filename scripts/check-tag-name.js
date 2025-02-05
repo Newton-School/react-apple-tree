@@ -10,7 +10,7 @@ process.on('unhandledRejection', (err) => {
 
 const args = process.argv.slice(2);
 const tagName = args[0];
-const allowPre = args.includes('--allow-pre');
+const isPre = args.includes('--pre');
 const checkForDocs = args.includes('--docs');
 
 if (!tagName) {
@@ -21,8 +21,8 @@ if (!tagName) {
 const versionRegex = /^v\d+\.\d+\.\d+$/;
 const preVersionRegex = /^v\d+\.\d+\.\d+-\d+$/;
 
-if (allowPre) {
-  if (versionRegex.test(tagName) || preVersionRegex.test(tagName)) {
+if (isPre) {
+  if (preVersionRegex.test(tagName)) {
     console.log('Valid tag name.');
   } else {
     console.error('Invalid tag name.');
