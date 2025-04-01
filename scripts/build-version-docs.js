@@ -1,3 +1,23 @@
+/**
+ * This script automates the process of building versioned documentation.
+ * It performs the following tasks:
+ * 1. Validates the provided version name by running `npm run check-tag-name`.
+ * 2. Creates a directory for the versioned documentation if it doesn't already exist.
+ * 3. Builds the Storybook documentation and outputs it to the versioned directory.
+ *
+ * Usage:
+ *    node build-version-docs.js <version-name>
+ *    -- or --
+ *    npm run build-version-docs <version-name>
+ *
+ * Arguments:
+ *   <version-name> - The name of the version for which the documentation is being built.
+ *
+ * Notes:
+ * - The script exits with an error if no version name is provided or if the Storybook build fails.
+ * - The output directory for the Storybook build is located at `docs/<version-name>`.
+ */
+
 /* eslint-disable no-console */
 const { execSync } = require('child_process');
 const fs = require('fs');

@@ -1,3 +1,29 @@
+/**
+ * This script updates the version based on the provided command-line arguments.
+ * It modifies the `package.json` file with the new version, optionally updates the `versions.json` file,
+ * and runs necessary commands like `npm install` and `prettier` to format the files.
+ *
+ * Command-line arguments:
+ * - `pre`: Indicates a pre-release version (e.g., `1.0.0-0`).
+ * - `patch`: Increments the patch version (e.g., `1.0.0` -> `1.0.1`).
+ * - `minor`: Increments the minor version (e.g., `1.0.0` -> `1.1.0`).
+ * - `major`: Increments the major version (e.g., `1.0.0` -> `2.0.0`).
+ * - `-y`: Automatically accepts the proposed new version without prompting the user.
+ * - `pre` can be combined with `patch`, `minor`, or `major` to create a pre-release version.
+ *
+ * Behavior:
+ * - If `pre` is specified, it increments the pre-release version or starts a new pre-release.
+ * - If `patch`, `minor`, or `major` is specified, it increments the respective version part.
+ * - Updates `versions.json` to include the new version if it is a major or minor release and not a pre-release.
+ * - Ensures only the latest 10 versions are kept in `versions.json`.
+ * - Prompts the user for confirmation unless `-y` is provided.
+ *
+ * Usage:
+ * Run the script with the desired arguments to update the version.
+ * Example: `node update-version.js minor`
+ * Or use the npm script: `npm run update-version minor`
+ */
+
 /* eslint-disable no-console */
 const fs = require('fs');
 const path = require('path');

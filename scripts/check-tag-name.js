@@ -1,3 +1,26 @@
+/**
+ * This script validates a given tag name based on specific versioning rules
+ * and optionally checks if the tag name exists in a `versions.json` file.
+ *
+ * The script expects the following arguments:
+ *
+ * @param {string} tagName - The tag name to validate. It must follow semantic versioning.
+ *                           Examples: `v1.0.0` (for release versions) or `v1.0.0-1` (for pre-release versions).
+ * @param {boolean} [--pre] - Optional flag to indicate that the tag name is a pre-release version.
+ * @param {boolean} [--docs] - Optional flag to check if the tag name exists in the `versions.json` file.
+ *
+ * Behavior:
+ * - If `--pre` is provided, the tag name is validated against the pre-release version regex.
+ * - If `--docs` is provided, the script checks if the tag name exists in the `versions.json` file.
+ * - If the tag name is invalid or not found in `versions.json` (when `--docs` is used), the script exits with an error.
+ * - If the tag name is valid and all checks pass, the script logs success messages to the console.
+ *
+ * Usage:
+ * Run the script with the required arguments to validate the tag name.
+ * Example: `node check-tag-name.js v1.0.0`
+ * or use the npm script: `npm run check-tag-name v1.0.0-1 --pre`
+ */
+
 /* eslint-disable no-console */
 const fs = require('fs');
 const path = require('path');
