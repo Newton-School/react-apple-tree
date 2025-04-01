@@ -50,7 +50,7 @@ jobs:
           git fetch origin
           git checkout ${{ github.event.inputs.branch }}
       - name: Update version
-        run: npm run update-version ${{ github.event.inputs.args }} -y
+        run: npm run update-version ${{ github.event.inputs.args }} -- -y
       - name: Get new version
         id: get_version
         run: echo "::set-output name=version::$(node -p -e "require('./package.json').version")"
