@@ -29,6 +29,7 @@ const isPre = args.includes('pre');
 const isPatch = args.includes('patch');
 const isMinor = args.includes('minor');
 const isMajor = args.includes('major');
+const isNewVersionAccepted = args.includes('-y');
 
 // Construct the new version based on the command line arguments
 if (isMajor) {
@@ -57,23 +58,7 @@ if (isMajor) {
 
 const newVersion = `${mainVersionParts.join('.')}${preVersion !== null ? `-${preVersion}` : ''}`;
 
-// Display the old version and the new version
-console.log(`Current version: ${currentVersion}`);
-console.log(`Proposed new version: ${newVersion}`);
-
-// Ask the user if they want to continue
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-rl.question('Do you want to continue? (y/n): ', (answer) => {
-  if (answer.toLowerCase() !== 'y') {
-    console.log('Aborting version update.');
-    process.exit(0);
-  }
-  rl.close();
-
+function main() {
   // Update package.json with the new version
   packageJson.version = newVersion;
   fs.writeFileSync(PACKAGE_JSON, JSON.stringify(packageJson, null, 2), 'utf8');
@@ -115,4 +100,27 @@ rl.question('Do you want to continue? (y/n): ', (answer) => {
       console.log(`Version v${newVersion} already exists`);
     }
   }
-});
+}
+
+if (isNewVersionAccepted) {
+  main();
+} else {
+  // Display the old version and the new version
+  console.log(`Current version: ${currentVersion}`);
+  console.log(`Proposed new version: ${newVersion}`);
+
+  // Ask the user if they want to continue
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  rl.question('Do you want to continue? (y/n): ', (answer) => {
+    if (!isNewVersionAccepted && answer.toLowerCase() !== 'y') {
+      console.log('Aborting version update.');
+      process.exit(0);
+    }
+    rl.close();
+    main();
+  });
+}
