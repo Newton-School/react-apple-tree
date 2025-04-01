@@ -1,7 +1,34 @@
+/**
+ * This script updates the version based on the provided command-line arguments.
+ * It modifies the `package.json` file with the new version, optionally updates the `versions.json` file,
+ * and runs necessary commands like `npm install` and `prettier` to format the files.
+ *
+ * Command-line arguments:
+ * - `pre`: Indicates a pre-release version (e.g., `1.0.0-0`).
+ * - `patch`: Increments the patch version (e.g., `1.0.0` -> `1.0.1`).
+ * - `minor`: Increments the minor version (e.g., `1.0.0` -> `1.1.0`).
+ * - `major`: Increments the major version (e.g., `1.0.0` -> `2.0.0`).
+ * - `-y`: Automatically accepts the proposed new version without prompting the user.
+ * - `pre` can be combined with `patch`, `minor`, or `major` to create a pre-release version.
+ *
+ * Behavior:
+ * - If `pre` is specified, it increments the pre-release version or starts a new pre-release.
+ * - If `patch`, `minor`, or `major` is specified, it increments the respective version part.
+ * - Updates `versions.json` to include the new version if it is a major or minor release and not a pre-release.
+ * - Ensures only the latest 10 versions are kept in `versions.json`.
+ * - Prompts the user for confirmation unless `-y` is provided.
+ *
+ * Usage:
+ * Run the script with the desired arguments to update the version.
+ * Example: `node update-version.js minor`
+ * Or use the npm script: `npm run update-version minor`
+ */
+
 /* eslint-disable no-console */
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const readline = require('readline');
 
 // Exit immediately if a command exits with a non-zero status
 process.on('unhandledRejection', (err) => {
@@ -28,6 +55,7 @@ const isPre = args.includes('pre');
 const isPatch = args.includes('patch');
 const isMinor = args.includes('minor');
 const isMajor = args.includes('major');
+const isNewVersionAccepted = args.includes('-y');
 
 // Construct the new version based on the command line arguments
 if (isMajor) {
@@ -56,44 +84,69 @@ if (isMajor) {
 
 const newVersion = `${mainVersionParts.join('.')}${preVersion !== null ? `-${preVersion}` : ''}`;
 
-// Update package.json with the new version
-packageJson.version = newVersion;
-fs.writeFileSync(PACKAGE_JSON, JSON.stringify(packageJson, null, 2), 'utf8');
-execSync(`npx prettier --write ${PACKAGE_JSON}`, { stdio: 'inherit' });
-console.log(`Updated version to ${newVersion}`);
+function main() {
+  // Update package.json with the new version
+  packageJson.version = newVersion;
+  fs.writeFileSync(PACKAGE_JSON, JSON.stringify(packageJson, null, 2), 'utf8');
+  execSync(`npx prettier --write ${PACKAGE_JSON}`, { stdio: 'inherit' });
+  console.log(`Updated version to ${newVersion}`);
 
-// Run npm install
-execSync('npm install', { stdio: 'inherit' });
+  // Run npm install
+  execSync('npm install', { stdio: 'inherit' });
 
-if (!isPre && (isMajor || isMinor)) {
-  // Read the versions.json file
-  const versionsJson = JSON.parse(fs.readFileSync(VERSIONS_JSON, 'utf8'));
+  if (!isPre && (isMajor || isMinor)) {
+    // Read the versions.json file
+    const versionsJson = JSON.parse(fs.readFileSync(VERSIONS_JSON, 'utf8'));
 
-  // Check if the version already exists in versions.json
-  const versionExists = versionsJson.some(
-    (version) => version === `v${newVersion}`,
-  );
-
-  if (!versionExists) {
-    // If the version does not exist, add it to versions.json
-    versionsJson.push(`v${newVersion}`);
-
-    // Ensure only the latest 10 versions are kept
-    if (versionsJson.length > 10) {
-      versionsJson.shift();
-    }
-
-    // Write the updated versions.json file
-    fs.writeFileSync(
-      VERSIONS_JSON,
-      JSON.stringify(versionsJson, null, 2),
-      'utf8',
+    // Check if the version already exists in versions.json
+    const versionExists = versionsJson.some(
+      (version) => version === `v${newVersion}`,
     );
-    console.log(`Version v${newVersion} added to versions.json`);
 
-    // Run prettier on versions.json
-    execSync(`npx prettier --write ${VERSIONS_JSON}`, { stdio: 'inherit' });
-  } else {
-    console.log(`Version v${newVersion} already exists`);
+    if (!versionExists) {
+      // If the version does not exist, add it to versions.json
+      versionsJson.push(`v${newVersion}`);
+
+      // Ensure only the latest 10 versions are kept
+      if (versionsJson.length > 10) {
+        versionsJson.shift();
+      }
+
+      // Write the updated versions.json file
+      fs.writeFileSync(
+        VERSIONS_JSON,
+        JSON.stringify(versionsJson, null, 2),
+        'utf8',
+      );
+      console.log(`Version v${newVersion} added to versions.json`);
+
+      // Run prettier on versions.json
+      execSync(`npx prettier --write ${VERSIONS_JSON}`, { stdio: 'inherit' });
+    } else {
+      console.log(`Version v${newVersion} already exists`);
+    }
   }
+}
+
+if (isNewVersionAccepted) {
+  main();
+} else {
+  // Display the old version and the new version
+  console.log(`Current version: ${currentVersion}`);
+  console.log(`Proposed new version: ${newVersion}`);
+
+  // Ask the user if they want to continue
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  rl.question('Do you want to continue? (y/n): ', (answer) => {
+    if (!isNewVersionAccepted && answer.toLowerCase() !== 'y') {
+      console.log('Aborting version update.');
+      process.exit(0);
+    }
+    rl.close();
+    main();
+  });
 }
