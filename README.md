@@ -1,5 +1,14 @@
 # React Apple Tree
 
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url]
+[![Size][size-image]][npm-url] [![License][license-image]][npm-url]
+
+[npm-url]: https://www.npmjs.com/package/@newtonschool/react-apple-tree
+[downloads-image]: http://img.shields.io/npm/dm/@newtonschool/react-apple-tree.svg?style=for-the-badge
+[npm-image]: http://img.shields.io/npm/v/@newtonschool/react-apple-tree.svg?style=for-the-badge
+[size-image]: http://img.shields.io/bundlephobia/min/@newtonschool/react-apple-tree.svg?style=for-the-badge
+[license-image]: http://img.shields.io/npm/l/@newtonschool/react-apple-tree.svg?style=for-the-badge
+
 > A React component for Drag-and-drop sortable representation of hierarchical data. Checkout the [Storybook](https://react-apple-tree.newtonschool.co/) for a demonstration of some basic and advanced features.
 
 <img src="https://d3dyfaf3iutrxo.cloudfront.net/general/upload/5591c3e649a44a7dbabdfd6ddda7d2f2.gif" />
